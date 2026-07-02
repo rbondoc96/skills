@@ -6,3 +6,11 @@ Personal coding-agent skills for software design, review, refactoring, and imple
 
 - `coding-standards/` — model-invoked TypeScript coding standards and design taste. A thin `SKILL.md` router plus topic files (vocabulary, domain modeling, error handling, boundaries/parsing, module design, async, testing, TypeScript contracts, frontend components, React, Vue, Effect, observability) loaded on demand via progressive disclosure. Covers Node/backend and React/Vue frontends.
 - `prose/` — model-invoked skill for writing human-facing text in a consistent personal voice. A `SKILL.md` holding the core voice plus per-mode files (Slack, commits, pull requests, email) loaded on demand. Use when drafting or editing anything another person will read.
+
+## Install
+
+```sh
+scripts/link-skills.sh
+```
+
+Edit `COMMON_SKILLS_DIR` and `TARGET_DIRS` at the top of `scripts/link-skills.sh` to change install targets. The script copies skill folders into `~/.agents/skills`, then symlinks target skill dirs to those common clones.
