@@ -1,3 +1,6 @@
+# Local
+*.local.*
+
 # Node
 node_modules
 
