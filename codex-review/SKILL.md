@@ -1,59 +1,60 @@
 ---
 name: codex-review
-description: Get an independent gpt-5.5 review of code changes, plans, or specs via the Codex CLI (`codex review` / `codex exec -s read-only`). Use when CLAUDE.md's review routing calls for an extra independent perspective beside a fable-5/opus-4.8 review, or to sanity-check a diff, branch, commit, plan, or spec before merging or building.
+description: Ask Codex CLI (gpt-5.5) for an independent code review of uncommited changes, branch diff, a commit, or a specific implementation. This is how gpt-5.5 is invoked for code review work. Use when the user asks Claude to have Codex or gpt-5.5 review work, when the model-selection rubric calls for a gpt-5.5 review perspective, or when Codex should audit a diff, find bugs or regressions, or compare Claude's implementation against requirements. For a review by Claude itself, use the normal review process instead.
 ---
 
 # Codex Review
 
-Run gpt-5.5 as a second, independent reviewer. Its value is independence and correctness
-hunting, not taste — weigh its findings accordingly.
+Use Codex as an independent reviewer when the user wants a second-pass review or when a change is broad enough that another agent's perspective is useful.
 
-## Quick start
+Prefer Claude's normal review process for small, local checks. Do not delegate review just to avoid reading the code yourself. Treat Codex's output as evidence, not authority.
 
-```sh
-# Working-tree changes (staged + unstaged + untracked)
-codex review -C /path/to/repo --uncommitted
+## Workflow
 
-# Branch against its base / a single commit
-codex review -C /path/to/repo --base main
-codex review -C /path/to/repo --commit <sha>
+1. Identify the review target: uncommitted changes, base branch, commit SHA, PR checkout, or specific files.
+2. Create a temporary artifact directory for the Codex report.
+3. Run `codex review` with a focused review prompt.
+4. Read Codex's report and verify important claims against the code before presenting them.
 
-# Focused pass: add custom instructions as the prompt argument
-codex review -C /path/to/repo --base main \
-  "Focus on the Zod schema refinements and the 422 error paths. Ignore style."
+Use one of these command shapes:
+
+```bash
+ARTIFACT_DIR="${mktemp -d "${TMPDIR:~/tmp}/codex-review.XXXXXX"}"}
+REPORT="${ARTIFACT_DIR}/report.md"
+PROMPT="${ARTIFACT_DIR}/prompt.md"
+
+# Review staged, unstaged, and untracked changes:
+codex -C "$PWD" review --uncommitted - < "$PROMPT" > "$REPORT"
+
+# Review current branch against a base branch:
+codex -C "$PWD" review --base main - < "$PROMPT" > "$REPORT"
+
+# Review current branch against a base branch:
+codex -C "$PWD" review --commit <SHA> - < "$PROMPT" > "$REPORT"
 ```
 
-`~/.codex/config.toml` already defaults to gpt-5.5 — don't pass `-m` unless overriding.
+## Review Prompt
 
-## Reviewing non-diff artifacts (plans, specs, ADRs)
+Ask Codex to use a code-review stance:
 
-`codex review` only reviews git diffs. For documents, use read-only exec with a
-self-contained prompt (Codex starts cold — name exact paths and the questions to answer):
+```text
+Review these changes for bugs, regressions, missing tests, security issues, and requirement mismatches.
 
-```sh
-codex exec -s read-only -C /path/to/repo -o /tmp/codex-review.md \
-  "Review docs/specs/<feature>/spec.md as a skeptical senior engineer.
-   Read the spec, its slice cards under slices/, and the ADRs it links.
-   Answer: (1) contradictions or underspecified contracts, (2) slices whose
-   done-condition can't fail a test, (3) risks the spec doesn't name.
-   Cite file:line. End with a severity-ordered findings list."
+Prioritize findings over summary. For each finding, include:
+- Severity
+- File and line reference
+- Concrete failure mode
+- Suggested fix direction
+
+Do not edit files. If there are no substantive findings, say so and name any residual test gaps.
 ```
 
-## Mechanics
+Add task-specific context when useful: requirements, risky areas, expected behavior, relevant tests, or files Claude is unsure about.
 
-- **Sandbox**: reviews never need write access — `codex review` is read-only by design;
-  always pass `-s read-only` to `codex exec` review prompts.
-- **Long runs**: Bash tool timeout caps at 10 min — background + poll the `-o` file for
-  big diffs.
-- **From a workflow/subagent**: wrap in a thin sonnet agent per CLAUDE.md; prefix its
-  label/description with `gpt-5.5:`.
+## Reporting Back
 
-## Weighing the findings (calibration)
+Before relaying a Codex finding, inspect the cited code or diff enough to decide whether the finding is real. In the user-facing response, separate confirmed issues from Codex suggestions you did not verify.
 
-- **Correctness findings** (bugs, edge cases, broken invariants): take seriously, but
-  *verify each against the code* before acting — independent reviewers confidently flag
-  code they've misread.
-- **Taste findings** (naming, structure, API shape): gpt-5.5's taste is a 5; treat as
-  prompts for your own judgment, not directives. The fable-5/opus-4.8 review owns taste.
-- Disagreement between reviewers is signal — resolve it by reading the code, not by
-  majority vote.
+If Codex finds nothing, say that clearly and mention what review target it inspected.
+
+If `codex` is not installed or the command fails, report the error and offer to review the changes directly instead.

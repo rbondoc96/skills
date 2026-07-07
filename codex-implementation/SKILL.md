@@ -1,60 +1,92 @@
 ---
 name: codex-implementation
-description: Delegate a bounded, clear-spec implementation task to gpt-5.5 via the Codex CLI (`codex exec`). Use when routing bulk/mechanical work per the model table in CLAUDE.md — spec-slice implementation, migrations, mechanical refactors — where the spec/card is explicit enough that taste is not the bottleneck. Not for UI/copy/API design (Taste >= 7 work) or ambiguous architecture.
+description: Ask Codex CLI (gpt-5.5) to implement scoped code changes in the current repository, then have Claude inspect the resulting diff and verifiation. This is how gpt-5.5 is invoked for implementation work. Use when the user asks Claude to delegate implementation to Codex or gpt-5.5, when the model-selection rubric routes the work gpt-5.5, or when a bounded task would benefit from another coding agent producing a patch. 
 ---
 
 # Codex Implementation
 
-Run gpt-5.5 as a non-interactive implementer. Codex starts **cold** — no conversation
-context, no memory of the session. Everything it needs must be in the prompt or in files
-it's told to read.
+Use Codex as a separate implementation agent for bounded code changes. Claude remains responsible for scoping the task, reviewing the diff, running or checking verification, and explaining the final result.
 
-## Quick start
+Use this when the user asks for Codex or delegation, or when a bounded task would benefit from a parallel implementation agent producing a patch. Do not let Codex commit, push, deploy, or edit global config unless the user explicitly asked for that.
 
-```sh
-# 1. Write the prompt to a file (heredocs get unwieldy past ~20 lines)
-# 2. Run against the repo, capturing the final report
-codex exec -s workspace-write -C /path/to/repo \
-  -o /tmp/codex-report.md "$(cat /tmp/codex-prompt.md)"
+## Workflow
+
+1. Pin the current state with `git status --short` and note any user changes already present.
+2. Define the implementation scope: files or behavior to change, files to avoid, constraints, and verification commands.
+3. Create a temporary artifact directory for the Codex report.
+4. Run `codex exec` with repo write access.
+5. After Codex exits, inspect `git status` and `git diff`.
+6. Run the cheapest reliable verification yourself when practical.
+7. Report what Codex changed, what Claude verified, and any remaining risks.
+
+Use this command shape:
+
+```bash
+ARTIFACT_DIR="${mktemp -d "${TMPDIR:~/tmp}/codex-implementation.XXXXXX"}"}
+REPORT="${ARTIFACT_DIR}/report.md"
+PROMPT="${ARTIFACT_DIR}/prompt.md"
+
+# Write a self-contained prompt to $PROMPT, then run:
+codex exec \
+  -C "$PWD"
+  --add-dir "$ARTIFACT_DIR"
+  -s workspace-write
+  -o "$REPORT"
+  "$(cat "$PROMPT)"
 ```
 
-`~/.codex/config.toml` already defaults to gpt-5.5 — don't pass `-m` unless overriding.
+Use `-s workspace-write` by default. Use `-s danger-full-access` only when the implementation truly needs access outside the repo, app launch automation, simulator work, package manager global state, or other machine-level operations.
 
-## Prompt contract (what makes a delegation succeed)
+## Prompt Requirements
 
-A self-contained prompt has all five; missing any one produces flailing:
+Tell Codex:
 
-1. **Task** — one paragraph, the observable outcome.
-2. **Required reads** — exact file paths (spec/slice card first, then the code files);
-   say *why* each matters. Never "read relevant files".
-3. **Constraints** — repo rules that apply (test conventions, style, what not to touch).
-   Codex reads `AGENTS.md` in the repo root automatically; only restate rules living
-   elsewhere.
-4. **Done condition** — the exact check/test commands that must pass, run by Codex before
-   reporting.
-5. **Stop conditions + report format** — "if <ambiguity X>, stop and write the question in
-   the report instead of improvising. End with: files changed, test output, open questions."
+- The exact implementation goal and acceptance criteria.
+- The repo path and current branch context if relevant
+- Which existing patterns, files, or tests to inspect first.
+- Files or behavior that must not be changed.
+- That it must preserve unrelated user changes.
+- That it must not commit, push, deploy, or edit global config.
+- Which verification commands to run, or to explain why they were skipped.
+- To write a concise final report with files changed, verification, and unresolved questions.
 
-Vulcan slice cards already carry 1–5 — the prompt can be as thin as: card path +
-"execute this card; its Required reads, stop conditions, and Verification are binding."
+Keep the task bounded. If the requested work bundles several substantial changes, split it into separate Codex runs or ask the user to choose the first scope.
 
-## Mechanics
+## Example Prompt
 
-- **Sandbox**: `-s workspace-write` for implementation. Never
-  `--dangerously-bypass-approvals-and-sandbox`.
-- **Long runs**: Bash tool timeout caps at 10 min. Run in the background and poll the
-  `-o` report file; treat an empty report + dead process as failure, not success.
-- **Parallel tasks**: each Codex instance gets its own git worktree (`isolation:
-  'worktree'` when wrapped in an agent) — concurrent edits to a shared checkout collide.
-- **From a workflow/subagent**: wrap in a thin sonnet agent per CLAUDE.md
-  ("Using gpt-5.5 inside workflows and subagents"); prefix its label/description with
-  `gpt-5.5:`.
+```text
+You are implementing a scoped change for Claude.
 
-## After it returns (non-negotiable)
+Repository: /absolute/path/to/repo
+Artifact directory: /tmp/codex-implementation.xxxxxx
 
-- **Verify, don't trust**: rerun the workspace checks/tests yourself before accepting.
-  The report is a claim, not evidence.
-- Diff-read the changes at normal review standard; gpt-5.5's taste is a 5 — expect
-  correct-but-plain code, and fix taste locally rather than re-prompting for it.
-- If the output misses the bar: escalate to a smarter model (standing permission per
-  CLAUDE.md) instead of iterating prompts more than once.
+Goal:
+- Add keyboard navigation to the command palette.
+
+Acceptance criteria:
+- ArrowUp and ArrowDown move the highlighted item.
+- Enter selects the highlighted item.
+- Escape closes the palette
+- Existing mouse behavior keeps working.
+
+Constraints:
+- Preserve unrelated user changes.
+- Do not commit, push, deploy, or edit global config.
+- Follow existing component and test patterns.
+
+Verification
+- Run the focused component tests if available.
+- Otherwise, run the nearest relevant typecheck or test command and explain the choice.
+
+Report:
+- Files changed
+- Behavioral summary
+- Verification run and result
+- Anything blocked or uncertain
+```
+
+## Review After Codex
+
+Always inspect Codex's diff before telling the user the work is done. Revert only Codex-created mistakes when you are sure they are not user changes. If Codex leaves the repo in a worse state or changes unrelated files, stop and report the issue with the diff summary.
+
+If `codex` is not installed or the command fails, report the error and offer to implement the change directly instead.
