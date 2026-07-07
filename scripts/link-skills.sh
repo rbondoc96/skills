@@ -11,6 +11,12 @@ TARGET_DIRS=(
   "$HOME/.pi/agent/skills"
 )
 
+# These skills are only linked into Claude's skill directory.
+CLAUDE_ONLY_SKILLS=(
+  codex-implementation
+  codex-review
+)
+
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 
@@ -94,6 +100,24 @@ clone_skill() {
   fi
 }
 
+is_claude_only_skill() {
+  local skill_name="$1"
+
+  for claude_only_skill in "${CLAUDE_ONLY_SKILLS[@]}"; do
+    if [[ "$skill_name" == "$claude_only_skill" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+is_claude_target() {
+  local target_root="$1"
+
+  [[ "$target_root" == "$HOME/.claude/skills" ]]
+}
+
 link_skill() {
   local skill_name="$1"
   local target_root="$2"
@@ -111,12 +135,43 @@ link_skill() {
   ln -s "$common_dir" "$target_dir"
 }
 
+should_link_skill() {
+  local skill_name="$1"
+  local target_root="$2"
+
+  if is_claude_only_skill "$skill_name" && ! is_claude_target "$target_root"; then
+    return 1
+  fi
+
+  return 0
+}
+
+unlink_skill() {
+  local skill_name="$1"
+  local target_root="$2"
+  local target_dir="$target_root/$skill_name"
+
+  echo "unlink: $target_dir"
+
+  if ((DRY_RUN)); then
+    return
+  fi
+
+  rm -rf "$target_dir"
+}
+
 for skill_dir in "${SKILL_DIRS[@]}"; do
   clone_skill "$skill_dir"
 done
 
 for target_root in "${TARGET_DIRS[@]}"; do
   for skill_dir in "${SKILL_DIRS[@]}"; do
-    link_skill "$(basename "$skill_dir")" "$target_root"
+    skill_name="$(basename "$skill_dir")"
+
+    if should_link_skill "$skill_name" "$target_root"; then
+      link_skill "$skill_name" "$target_root"
+    else
+      unlink_skill "$skill_name" "$target_root"
+    fi
   done
 done
