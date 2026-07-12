@@ -11,6 +11,7 @@ This repo stores personal coding-agent skills. Optimize changes for editing, mai
   - `SKILL.md` defines the core voice.
   - Mode files define channel-specific rules.
 - `codex-implementation/` and `codex-review/` contain the Codex CLI delegation skills (single `SKILL.md` each; they pair with the model-routing table in the user CLAUDE.md).
+- `pi-implementation/` and `pi-review/` contain the Pi CLI delegation skills (single `SKILL.md` each; same pattern as `codex-implementation`/`codex-review` but for the Pi coding agent).
 - `scripts/link-skills.sh` installs skills by copying and symlinking outside this repo.
 
 ## Hard rules

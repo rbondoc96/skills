@@ -15,6 +15,8 @@ TARGET_DIRS=(
 CLAUDE_ONLY_SKILLS=(
   codex-implementation
   codex-review
+  pi-implementation
+  pi-review
 )
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
