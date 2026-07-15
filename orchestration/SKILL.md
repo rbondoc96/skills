@@ -13,7 +13,7 @@ Use this skill before dispatching work. A route is a proposal, never permission 
 
 1. Classify each slice and role: investigate, plan, implement, review, or integrate. Load [`ROUTING.md`](ROUTING.md).
 2. Check that every selected model is reachable. If not, revise the route; never silently substitute.
-3. Load one harness adapter: [`CLAUDE.md`](CLAUDE.md), [`CODEX.md`](CODEX.md), or [`PI.md`](PI.md).
+3. Load one harness adapter: [`CLAUDE.md`](CLAUDE.md) or [`PI.md`](PI.md).
 4. Show the user this Markdown table and wait for approval:
 
    | Slice | Role | Model | Harness | Why | Isolation | Verification | Fallback | Cost |
@@ -47,5 +47,4 @@ Every dispatched prompt contains:
 ## Adapters
 
 - Read [`CLAUDE.md`](CLAUDE.md) for Agent and Workflow dispatch.
-- Read [`CODEX.md`](CODEX.md) for Codex CLI dispatch.
 - Read [`PI.md`](PI.md) for Pi CLI dispatch.
