@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Skills are cloned here first. Target directories get symlinks to these clones.
+# Standard skills are copied here first. Target directories get symlinks to these copies.
 COMMON_SKILLS_DIR="$HOME/.agents/skills"
 
 # Edit this list to choose which skill directories should point at COMMON_SKILLS_DIR.
@@ -13,6 +13,14 @@ TARGET_DIRS=(
 
 # These skills are only linked into Claude's skill directory.
 CLAUDE_ONLY_SKILLS=(
+  # codex-implementation
+  # codex-review
+  # pi-implementation
+  # pi-review
+)
+
+# These skill directories are not cloned or linked.
+IGNORED_SKILLS=(
   codex-implementation
   codex-review
   pi-implementation
@@ -29,7 +37,8 @@ Usage: $(basename "$0") [--dry-run] [target-dir ...]
 Copies each skill directory from this repo into:
   $COMMON_SKILLS_DIR
 
-Then symlinks each target skill directory to the common clone.
+Then symlinks each standard target skill directory to the common copy.
+Claude-only skills are copied directly to Claude's skill directory.
 Targets default to TARGET_DIRS at the top of this script.
 
 Options:
@@ -73,39 +82,41 @@ if ((${#SKILL_DIRS[@]} == 0)); then
   exit 1
 fi
 
-clone_skill() {
+copy_skill() {
   local source_dir="$1"
-  local skill_name
-  local common_dir
-
-  skill_name="$(basename "$source_dir")"
-  common_dir="$COMMON_SKILLS_DIR/$skill_name"
-
-  echo "clone: $source_dir -> $common_dir"
+  local target_dir="$2"
 
   if ((DRY_RUN)); then
     return
   fi
 
-  mkdir -p "$COMMON_SKILLS_DIR"
+  mkdir -p "$(dirname "$target_dir")"
 
-  if [[ -L "$common_dir" ]]; then
-    rm "$common_dir"
+  if [[ -L "$target_dir" ]]; then
+    rm "$target_dir"
   fi
 
   if command -v rsync >/dev/null 2>&1; then
-    rsync -aL --delete --exclude .git/ "$source_dir/" "$common_dir/"
+    rsync -aL --delete --exclude .git/ "$source_dir/" "$target_dir/"
   else
-    rm -rf "$common_dir"
-    mkdir -p "$common_dir"
-    cp -R "$source_dir/." "$common_dir/"
+    rm -rf "$target_dir"
+    mkdir -p "$target_dir"
+    cp -R "$source_dir/." "$target_dir/"
   fi
+}
+
+clone_skill() {
+  local source_dir="$1"
+  local skill_name
+
+  skill_name="$(basename "$source_dir")"
+  copy_skill "$source_dir" "$COMMON_SKILLS_DIR/$skill_name"
 }
 
 is_claude_only_skill() {
   local skill_name="$1"
 
-  for claude_only_skill in "${CLAUDE_ONLY_SKILLS[@]}"; do
+  for claude_only_skill in "${CLAUDE_ONLY_SKILLS[@]-}"; do
     if [[ "$skill_name" == "$claude_only_skill" ]]; then
       return 0
     fi
@@ -120,13 +131,23 @@ is_claude_target() {
   [[ "$target_root" == "$HOME/.claude/skills" ]]
 }
 
+is_ignored_skill() {
+  local skill_name="$1"
+
+  for ignored_skill in "${IGNORED_SKILLS[@]-}"; do
+    if [[ "$skill_name" == "$ignored_skill" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 link_skill() {
   local skill_name="$1"
   local target_root="$2"
   local common_dir="$COMMON_SKILLS_DIR/$skill_name"
   local target_dir="$target_root/$skill_name"
-
-  echo "link:  $target_dir -> $common_dir"
 
   if ((DRY_RUN)); then
     return
@@ -137,43 +158,55 @@ link_skill() {
   ln -s "$common_dir" "$target_dir"
 }
 
-should_link_skill() {
-  local skill_name="$1"
-  local target_root="$2"
-
-  if is_claude_only_skill "$skill_name" && ! is_claude_target "$target_root"; then
-    return 1
-  fi
-
-  return 0
-}
-
 unlink_skill() {
   local skill_name="$1"
   local target_root="$2"
-  local target_dir="$target_root/$skill_name"
-
-  echo "unlink: $target_dir"
 
   if ((DRY_RUN)); then
     return
   fi
 
-  rm -rf "$target_dir"
+  rm -rf "$target_root/$skill_name"
 }
 
 for skill_dir in "${SKILL_DIRS[@]}"; do
-  clone_skill "$skill_dir"
-done
+  skill_name="$(basename "$skill_dir")"
 
-for target_root in "${TARGET_DIRS[@]}"; do
-  for skill_dir in "${SKILL_DIRS[@]}"; do
-    skill_name="$(basename "$skill_dir")"
+  if is_claude_only_skill "$skill_name"; then
+    logged=0
 
-    if should_link_skill "$skill_name" "$target_root"; then
-      link_skill "$skill_name" "$target_root"
-    else
+    for target_root in "${TARGET_DIRS[@]}"; do
+      if is_claude_target "$target_root"; then
+        target_dir="$target_root/$skill_name"
+        copy_skill "$skill_dir" "$target_dir"
+
+        if ((logged == 0)); then
+          printf '%s:\n' "$skill_name"
+          logged=1
+        fi
+
+        printf '  - %s (copied)\n' "$target_dir"
+      else
+        unlink_skill "$skill_name" "$target_root"
+      fi
+    done
+  elif is_ignored_skill "$skill_name"; then
+    for target_root in "${TARGET_DIRS[@]}"; do
       unlink_skill "$skill_name" "$target_root"
-    fi
-  done
+    done
+  else
+    common_dir="$COMMON_SKILLS_DIR/$skill_name"
+    clone_skill "$skill_dir"
+
+    printf '%s:\n' "$skill_name"
+    printf '  - %s (copied)\n' "$common_dir"
+
+    for target_root in "${TARGET_DIRS[@]}"; do
+      target_dir="$target_root/$skill_name"
+      link_skill "$skill_name" "$target_root"
+      printf '  - %s (linked to %s)\n' "$target_dir" "$common_dir"
+    done
+  fi
+
+  printf '\n'
 done
