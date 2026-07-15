@@ -10,6 +10,10 @@ This repo stores personal coding-agent skills. Optimize changes for editing, mai
 - `prose/` contains the `prose` skill.
   - `SKILL.md` defines the core voice.
   - Mode files define channel-specific rules.
+- `pr-review/` contains the `pr-review` skill.
+  - `SKILL.md` is the orchestration flow and read-only contract.
+  - `FINDINGS.md` holds the findings format, scopes, and line-range URL recipe; it doubles as the output contract handed to each reviewer.
+  - Depends on the `orchestration` skill for dispatch mechanics.
 - `codex-implementation/` and `codex-review/` contain the Codex CLI delegation skills (single `SKILL.md` each; they pair with the model-routing table in the user CLAUDE.md).
 - `pi-implementation/` and `pi-review/` contain the Pi CLI delegation skills (single `SKILL.md` each; same pattern as `codex-implementation`/`codex-review` but for the Pi coding agent).
 - `scripts/link-skills.sh` installs skills by copying and symlinking outside this repo.
