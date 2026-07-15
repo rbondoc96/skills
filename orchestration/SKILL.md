@@ -42,7 +42,7 @@ Every dispatched prompt contains:
 - Record a dirty worktree. Never reset, stash, or revert user changes. Stop on overlap with planned files.
 - Do not let dispatched agents commit unless the user explicitly authorized it. Pause after each accepted slice otherwise.
 - On execution failure, run the approved fallback once. On a quality miss, report a proposed reroute and wait for approval.
-- The orchestrator always performs diff inspection and verification. Add independent review when the user requests it or the route is high risk.
+- The orchestrator always performs diff inspection and verification. Add independent review when the user requests it or the route is high risk. Never dispatch a `fable-5` review when the orchestrating session is already `fable-5` — double cost, no independent perspective. Use `opus-4.8` or a Pi review route instead.
 
 ## Adapters
 
