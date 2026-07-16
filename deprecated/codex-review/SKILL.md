@@ -1,60 +1,31 @@
 ---
 name: codex-review
-description: Ask Codex CLI (gpt-5.6-terra) for an independent code review of uncommited changes, branch diff, a commit, or a specific implementation. This is how gpt-5.6-terra is invoked for code review work. Use when the user asks Claude to have Codex or gpt-5.6-terra review work, when the model-selection rubric calls for a gpt-5.6-terra review perspective, or when Codex should audit a diff, find bugs or regressions, or compare Claude's implementation against requirements. For a review by Claude itself, use the normal review process instead.
+description: Ask Codex CLI (gpt-5.6-terra) for an independent review of uncommitted changes, a branch diff, a commit, or a specific implementation. Use when the user asks for Codex or gpt-5.6-terra review.
 ---
 
 # Codex Review
 
-Use Codex as an independent reviewer when the user wants a second-pass review or when a change is broad enough that another agent's perspective is useful.
+Load the installed `orchestration` skill first for route selection, dispatch approval, target choice, verification, and fallback policy. This skill owns Codex review mechanics.
 
-Prefer Claude's normal review process for small, local checks. Do not delegate review just to avoid reading the code yourself. Treat Codex's output as evidence, not authority.
+## Run
 
-## Workflow
-
-1. Identify the review target: uncommitted changes, base branch, commit SHA, PR checkout, or specific files.
-2. Create a temporary artifact directory for the Codex report.
-3. Run `codex review` with a focused review prompt.
-4. Read Codex's report and verify important claims against the code before presenting them.
-
-Use one of these command shapes:
+1. Write the approved review prompt to a temporary file.
+2. Run Codex against the approved target.
+3. Return its report to the orchestrator.
 
 ```bash
-ARTIFACT_DIR="${mktemp -d "${TMPDIR:~/tmp}/codex-review.XXXXXX"}"}
+ARTIFACT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/codex-review.XXXXXX")"
 REPORT="${ARTIFACT_DIR}/report.md"
 PROMPT="${ARTIFACT_DIR}/prompt.md"
 
-# Review staged, unstaged, and untracked changes:
+# Uncommitted changes:
 codex -C "$PWD" review --uncommitted - < "$PROMPT" > "$REPORT"
 
-# Review current branch against a base branch:
+# Branch or commit:
 codex -C "$PWD" review --base main - < "$PROMPT" > "$REPORT"
-
-# Review current branch against a base branch:
 codex -C "$PWD" review --commit <SHA> - < "$PROMPT" > "$REPORT"
 ```
 
-## Review Prompt
+Ask for severity, file and line, concrete failure mode, suggested fix direction, and residual test gaps. Codex findings are evidence; the orchestrator verifies material claims before reporting them.
 
-Ask Codex to use a code-review stance:
-
-```text
-Review these changes for bugs, regressions, missing tests, security issues, and requirement mismatches.
-
-Prioritize findings over summary. For each finding, include:
-- Severity
-- File and line reference
-- Concrete failure mode
-- Suggested fix direction
-
-Do not edit files. If there are no substantive findings, say so and name any residual test gaps.
-```
-
-Add task-specific context when useful: requirements, risky areas, expected behavior, relevant tests, or files Claude is unsure about.
-
-## Reporting Back
-
-Before relaying a Codex finding, inspect the cited code or diff enough to decide whether the finding is real. In the user-facing response, separate confirmed issues from Codex suggestions you did not verify.
-
-If Codex finds nothing, say that clearly and mention what review target it inspected.
-
-If `codex` is not installed or the command fails, report the error and offer to review the changes directly instead.
+If `codex` fails, report the error and apply the approved fallback route.
