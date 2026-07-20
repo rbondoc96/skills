@@ -1,6 +1,7 @@
 ---
 name: pr-review
 description: Review a GitHub pull request with two independent reviewers from different model providers, then consolidate their findings into one Markdown file under ~/.pr-reviews. Strictly read-only — never edits, comments on, or approves the PR. Use when the user wants a PR reviewed, drops a GitHub PR URL to review, asks for a cross-model or second-opinion PR review, or wants review findings written to a file to apply by hand.
+disable-model-invocation: true
 ---
 
 # PR Review
