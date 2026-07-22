@@ -1,6 +1,7 @@
 ---
 name: prose
 description: Write text meant for another human in the user's personal voice. Use when drafting or editing a Slack/chat message, commit message, PR description or review comment, email, or any prose a person will read; or when another skill needs to produce human-facing writing.
+disable-model-invocation: true
 ---
 
 # Prose
