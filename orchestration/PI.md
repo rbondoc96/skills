@@ -1,45 +1,62 @@
 # Pi adapter
 
-Pi has no sandbox. Its tools receive the full permissions of the `pi` process. Keep the approved scope tight; do not route machine-level or credential-adjacent work to Pi without explicit authorization.
+Pi has no sandbox: its tools have the `pi` process permissions. Use a separate worktree or external isolation for every writer. Resolve `MODEL`, `THINKING`, `WORKDIR`, `PROMPT`, and `REPORT` from the approved route. Always pass `--model`; omit `--thinking` only for `default`. Otherwise use only `off`, `minimal`, `low`, `medium`, `high`, `xhigh`, or `max`.
+
+## Pi host
+
+When invoked from Pi, the current Pi agent remains the orchestrator. Run
+approved workers through `pi -p` or another selected executor; do not imply a
+native isolated subagent capability unless the current Pi surface advertises
+one.
 
 ## Implementation
 
-Resolve `MODEL` and `THINKING` from the approved route. Always pass the model; pass thinking unless the route says `default`.
+Use a disposable session and stdin rather than command substitution.
 
 ```bash
-ARTIFACT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pi-implementation.XXXXXX")"
-REPORT="${ARTIFACT_DIR}/report.md"
-PROMPT="${ARTIFACT_DIR}/prompt.md"
+args=(
+  pi
+  --model "$MODEL"
+  --no-session
+  --tools read,bash,edit,write,grep,find,ls
+  -p
+  "Complete the task in standard input. Do not delegate or re-orchestrate."
+)
 
-ARGS=(-p --no-session --model "$MODEL")
 if [[ "$THINKING" != "default" ]]; then
-  ARGS+=(--thinking "$THINKING")
+  args=(pi --model "$MODEL" --no-session --thinking "$THINKING" --tools read,bash,edit,write,grep,find,ls -p "Complete the task in standard input. Do not delegate or re-orchestrate.")
 fi
 
-(cd "$PWD" && pi "${ARGS[@]}" "$(cat "$PROMPT")") > "$REPORT"
+(cd "$WORKDIR" && "${args[@]}" < "$PROMPT") > "$REPORT"
+status=$?
 ```
 
-## Review
+## Read-only review
 
-Capture the approved diff without changing the index. Include untracked files explicitly.
+Restrict tools and project-local execution. Do not treat tool restrictions as process isolation.
 
 ```bash
-ARTIFACT_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pi-review.XXXXXX")"
-DIFF="${ARTIFACT_DIR}/diff.patch"
-REPORT="${ARTIFACT_DIR}/report.md"
-PROMPT="${ARTIFACT_DIR}/prompt.md"
+args=(
+  pi
+  --model "$MODEL"
+  --no-approve
+  --no-context-files
+  --no-extensions
+  --no-session
+  --tools read,grep,find,ls
+  -p
+  "Review the repository and task in standard input. Do not modify files or delegate."
+)
 
-git diff HEAD > "$DIFF"
-while IFS= read -r -d '' file; do
-  git diff --no-index -- /dev/null "$file" || true
-done < <(git ls-files --others --exclude-standard -z) >> "$DIFF"
-
-ARGS=(-p --no-session --no-tools --model "$MODEL")
 if [[ "$THINKING" != "default" ]]; then
-  ARGS+=(--thinking "$THINKING")
+  args=(pi --model "$MODEL" --no-approve --no-context-files --no-extensions --no-session --thinking "$THINKING" --tools read,grep,find,ls -p "Review the repository and task in standard input. Do not modify files or delegate.")
 fi
 
-(cat "$PROMPT" "$DIFF") | pi "${ARGS[@]}" > "$REPORT"
+(cd "$WORKDIR" && "${args[@]}" < "$PROMPT") > "$REPORT"
+status=$?
 ```
 
-Use `--no-tools` for review. Omit `--thinking` only when the route says `default`.
+Preserve `status`. `--no-context-files` prevents an external repository from
+steering the reviewer; omit it only when loading repository instructions is an
+approved part of the route. Use `--mode json` only when the report consumer
+parses JSONL rather than Markdown.

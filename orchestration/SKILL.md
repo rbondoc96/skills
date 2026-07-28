@@ -1,50 +1,64 @@
 ---
 name: orchestration
-description: Route delegation, model selection, subagents, workflows, parallel work, and multi-slice execution. Use when another skill needs a dispatch policy.
+description: Route delegation, model selection, subagents, workflows, parallel work, and multi-slice execution. Use whenever the user or another skill requests delegation, independent agents, model routing, or a dispatch policy.
 ---
 
 # Orchestration
 
-A **route** is one role's model, harness, isolation, verification, fallback, and cost tier.
+Use this skill before dispatching work. A route proposes work; it never grants dispatch permission.
 
-Use this skill before dispatching work. A route is a proposal, never permission to dispatch.
+## Terms
+
+- **Host:** the current runtime: Claude Code, Codex, Pi, or T3.
+- **Provider:** the model provider, distinct from the host and executor.
+- **Executor:** a native host agent or a spawned CLI transport such as `codex exec`, `pi -p`, or `claude -p`.
+- **Route:** role + provider + model + effort + executor + isolation + verification + fallback + subscription allowance/burn.
+
+Provider independence and executor independence are separate properties. Two executors using one provider are not provider-independent.
 
 ## Route
 
-1. Classify each slice and role: investigate, plan, implement, review, or integrate. Load [`ROUTING.md`](ROUTING.md).
-2. Check that every selected model is reachable. If not, revise the route; never silently substitute.
-3. Load one harness adapter: [`CLAUDE.md`](CLAUDE.md) or [`PI.md`](PI.md).
-4. Show the user this Markdown table and wait for approval:
+1. Classify each slice: investigate, plan, implement, review, or integrate. Load [`ROUTING.md`](ROUTING.md).
+2. Detect the current host and its advertised callable capabilities. Check the selected provider, model, effort, and executor are available. Mark unknown when they cannot be checked; never infer reachability from an executable name or silently substitute.
+3. Load every adapter the proposed mixed route uses: [`CLAUDE.md`](CLAUDE.md), [`CODEX.md`](CODEX.md), [`PI.md`](PI.md), and/or [`T3.md`](T3.md).
+4. Record the dirty-worktree baseline and check planned files for overlap. Stop on overlapping user changes unless those exact changes are in scope.
+5. Show this table and wait for approval:
 
-   | Slice | Role | Model | Harness | Why | Isolation | Verification | Fallback | Cost |
-   |---|---|---|---|---|---|---|---|---|
+   | Slice | Role | Provider | Model / effort | Executor | Why | Isolation | Verification | Fallback | Subscription allowance / burn |
+   |---|---|---|---|---|---|---|---|---|---|
 
-   Include an independent-review row whenever the route requires one.
-5. Dispatch only the approved plan. The approval covers one attempt plus one fallback on execution failure.
-6. Inspect every implementation diff and rerun its in-scope checks. Report each slice's route, files, verification, and unresolved risks.
+   Include independent-review rows when required. Approval covers one attempt and its listed execution-failure fallback.
+6. Dispatch only approved cards. Inspect every implementation diff, run in-scope verification, and accept integration yourself.
+
+Complete only when every approved slice reports, every changed diff is inspected, verification is recorded, and unresolved risks are surfaced.
 
 ## Dispatch card
 
-Every dispatched prompt contains:
+Include these fields in every prompt:
 
-- Goal and role
-- Approved route
-- Scope, files to avoid, and current-worktree baseline
-- Acceptance criteria and stop conditions
-- Verification commands
-- Required report: files changed, verification, unresolved questions
+- Goal and role; approved route; current baseline
+- Scope and explicit avoid list
+- Acceptance and stop criteria; verification commands
+- Report: files changed, verification, unresolved questions
 
-## Rules
+Tell workers not to commit or re-orchestrate. The orchestrator alone owns integration, diff inspection, verification, and final acceptance.
 
-- Route each role independently.
-- Parallelize only independent slices. The orchestrator may change parallelism without new approval after checking overlap in files, migrations, public contracts, and verification paths. Concurrent implementers use separate worktrees.
-- Stop and surface ambiguous acceptance criteria, required product choices, scope expansion, permissions, conflicting user changes, merge conflicts, and slice-card stop conditions. Propose a fix; do not improvise.
-- Record a dirty worktree. Never reset, stash, or revert user changes. Stop on overlap with planned files.
-- Do not let dispatched agents commit unless the user explicitly authorized it. Pause after each accepted slice otherwise.
-- On execution failure, run the approved fallback once. On a quality miss, report a proposed reroute and wait for approval.
-- The orchestrator always performs diff inspection and verification. Add independent review when the user requests it or the route is high risk. Never dispatch a `fable-5` review when the orchestrating session is already `fable-5` — double cost, no independent perspective. Use `opus-4.8` or a Pi review route instead.
+## Concurrency and failure
+
+- Parallelize only independent slices after checking files, migrations, public contracts, and verification paths.
+- Concurrent writers require separate worktrees. Native agents sharing a filesystem may run read-only in parallel.
+- Preserve dirty worktrees. Never reset, stash, revert, or silently merge user changes.
+- Stop for ambiguous acceptance, product choices, permissions, scope expansion, merge conflicts, user-change overlap, or a card stop condition. Propose the next action; do not improvise.
+- On execution failure, use the approved fallback once. On a quality miss, propose a reroute and wait for approval.
 
 ## Adapters
 
-- Read [`CLAUDE.md`](CLAUDE.md) for Agent and Workflow dispatch.
-- Read [`PI.md`](PI.md) for Pi CLI dispatch.
+Load the adapter for each selected executor or native-host route:
+
+- [`CLAUDE.md`](CLAUDE.md): Claude native agents and `claude -p`
+- [`CODEX.md`](CODEX.md): Codex native subagents and `codex exec`
+- [`PI.md`](PI.md): Pi native work and `pi -p`
+- [`T3.md`](T3.md): T3 native collaboration
+
+Load [`CALIBRATION.md`](CALIBRATION.md) only when the user asks to benchmark,
+revalidate, or change route evidence.

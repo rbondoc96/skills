@@ -14,8 +14,13 @@ This repo stores personal coding-agent skills. Optimize changes for editing, mai
   - `SKILL.md` is the orchestration flow and read-only contract.
   - `FINDINGS.md` holds the findings format, scopes, and line-range URL recipe; it doubles as the output contract handed to each reviewer.
   - Depends on the `orchestration` skill for dispatch mechanics.
-- `codex-implementation/` and `codex-review/` contain the Codex CLI delegation skills (single `SKILL.md` each; they pair with the model-routing table in the user CLAUDE.md).
-- `pi-implementation/` and `pi-review/` contain the Pi CLI delegation skills (single `SKILL.md` each; same pattern as `codex-implementation`/`codex-review` but for the Pi coding agent).
+- `orchestration/` contains the cross-host dispatch policy.
+  - `SKILL.md` owns the compact approval and orchestration protocol.
+  - `ROUTING.md` owns active subscription-aware route selection.
+  - `CLAUDE.md`, `CODEX.md`, `PI.md`, and `T3.md` own host/executor mechanics.
+  - `CALIBRATION.md` defines the deferred allowance-approved benchmark.
+  - `research/` holds dated evidence; it is not active policy.
+- `deprecated/` contains retired delegation skills kept for history.
 - `scripts/link-skills.sh` installs skills by copying and symlinking outside this repo.
 
 ## Hard rules
