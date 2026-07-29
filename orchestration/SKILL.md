@@ -20,15 +20,16 @@ Provider independence and executor independence are separate properties. Two exe
 
 1. Classify each slice: investigate, plan, implement, review, or integrate. Load [`ROUTING.md`](ROUTING.md).
 2. Detect the current host and its advertised callable capabilities. Check the selected provider, model, effort, and executor are available. Mark unknown when they cannot be checked; never infer reachability from an executable name or silently substitute.
-3. Load every adapter the proposed mixed route uses: [`CLAUDE.md`](CLAUDE.md), [`CODEX.md`](CODEX.md), [`PI.md`](PI.md), and/or [`T3.md`](T3.md).
-4. Record the dirty-worktree baseline and check planned files for overlap. Stop on overlapping user changes unless those exact changes are in scope.
-5. Show this table and wait for approval:
+3. Mark each allowance pool the proposed slices touch as `open`, `tight`, `exhausted`, or `unknown`. Apply `ROUTING.md`'s downshift rule: burn is ignored while a pool is `open`, binds when `tight`, and makes the pool's routes unavailable when `exhausted`. A downshift may never drop below the role's Tier/Taste floor.
+4. Load every adapter the proposed mixed route uses: [`CLAUDE.md`](CLAUDE.md), [`CODEX.md`](CODEX.md), [`PI.md`](PI.md), and/or [`T3.md`](T3.md).
+5. Record the dirty-worktree baseline and check planned files for overlap. Stop on overlapping user changes unless those exact changes are in scope.
+6. Show this table and wait for approval:
 
-   | Slice | Role | Provider | Model / effort | Executor | Why | Isolation | Verification | Fallback | Subscription allowance / burn |
+   | Slice | Role | Provider | Model / effort | Executor | Why | Isolation | Verification | Fallback | Pool / burn |
    |---|---|---|---|---|---|---|---|---|---|
 
-   Include independent-review rows when required. Approval covers one attempt and its listed execution-failure fallback.
-6. Dispatch only approved cards. Inspect every implementation diff, run in-scope verification, and accept integration yourself.
+   `Pool / burn` names the allowance pool, its marked state, and the route's burn. Show any downshift explicitly, with the pool state that triggered it. Include independent-review rows when required. Approval covers one attempt and its listed execution-failure fallback.
+7. Dispatch only approved cards. Inspect every implementation diff, run in-scope verification, and accept integration yourself.
 
 Complete only when every approved slice reports, every changed diff is inspected, verification is recorded, and unresolved risks are surfaced.
 
@@ -50,6 +51,7 @@ Tell workers not to commit or re-orchestrate. The orchestrator alone owns integr
 - Preserve dirty worktrees. Never reset, stash, revert, or silently merge user changes.
 - Stop for ambiguous acceptance, product choices, permissions, scope expansion, merge conflicts, user-change overlap, or a card stop condition. Propose the next action; do not improvise.
 - On execution failure, use the approved fallback once. On a quality miss, propose a reroute and wait for approval.
+- If a pool hits its cap mid-dispatch, stop and propose a downshift or fallback for approval. Never downshift silently after approval.
 
 ## Adapters
 
