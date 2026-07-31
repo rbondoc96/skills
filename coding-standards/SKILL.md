@@ -35,6 +35,7 @@ These are not aesthetic preferences. When they conflict with existing code, pres
 - Dependencies are explicit; hidden globals and ambient time/randomness/IDs do not drive service behavior.
 - Tests prove observable behavior through module interfaces or real seams; module mocks and method spies are out.
 - Type escape hatches are local, justified with `SAFETY:`, and hidden behind precise interfaces.
+- Don't use `||` to coalesce values by default. Use `??` or `||` appropriately.
 - Strict equality (`===`) only; never loose equality (`==`).
 - `as any` is banned except as a justified, `SAFETY:`-commented, lint-suppressed escape hatch (see [`TYPESCRIPT_CONTRACTS.md`](TYPESCRIPT_CONTRACTS.md)).
 - Never declare a native TypeScript `enum`; use a POJO `as const` object instead (see [`DOMAIN_MODELING.md`](DOMAIN_MODELING.md)).

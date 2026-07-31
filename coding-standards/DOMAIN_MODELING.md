@@ -55,6 +55,8 @@ If one check cannot be fully applied without broader migration, name the compati
   ```
 
   Native `enum` (numeric or string) is disallowed even for external interop — model the interop value explicitly and map at the boundary.
+- For domain model and its inferred type, use the same name (e.g. `const MyModel = z.object(...)` and `type MyModel = z.infer<typeof MyModel>`).
+    - The value and type namespaces are separate, so this is intentional, not a collision.
 - Use `_tag` as the internal discriminant unless another field name is real domain vocabulary.
 - Inspect existing Domain Modules and types before adding a new concept; reuse an existing concept when its vocabulary and invariant match.
 - Choose branded types, state machines, and value classes because they prevent realistic misuse or express a real invariant, not because the technique is fashionable.
