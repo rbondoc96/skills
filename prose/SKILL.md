@@ -1,6 +1,6 @@
 ---
 name: prose
-description: Write text meant for another human in the user's personal voice. Use when drafting or editing a Slack/chat message, commit message, PR description or review comment, email, or any prose a person will read; or when another skill needs to produce human-facing writing.
+description: Write text meant for another human in the user's personal voice. Use when drafting or editing a Slack/chat message, PR description or review comment, email, or any prose a person will read; or when another skill needs to produce human-facing writing.
 disable-model-invocation: true
 ---
 
@@ -49,7 +49,6 @@ Load the file for the mode you're writing.
 | Writing... | Load... |
 |---|---|
 | Slack / chat / DMs / standup updates / quick async | [`SLACK.md`](SLACK.md) |
-| Git commit messages | [`COMMITS.md`](COMMITS.md) |
 | PR descriptions, review comments, replies to reviewers | [`PULL_REQUESTS.md`](PULL_REQUESTS.md) |
 | Email: teammates, clients, external | [`EMAIL.md`](EMAIL.md) |
 

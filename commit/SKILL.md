@@ -1,6 +1,10 @@
-# Commit messages
+---
+name: commit
+description: Commit code changes according to the user's preferences.
+disable-model-invocation: true
+---
 
-Apply the voice from `SKILL.md`.
+# Commit
 
 ## Pattern
 
@@ -16,9 +20,10 @@ Apply the voice from `SKILL.md`.
 
 ## Body
 
-- Add a body only when the *why* isn't obvious from the summary. Explain the reason for the change, not a restatement of the diff.
-- Blank line between summary and body. Don't hard-wrap body paragraphs (see `SKILL.md`); write each paragraph as one line.
-- Reference issues/tickets in the repo's established format.
+- Add a body only when it preserves important context that cannot be inferred from the subject or diff.
+- Use the body to explain why the change was necessary, a non-obvious constraint, or an important consequence.
+- Don't use the body to summarize changed files, narrate the implementation, or restate the diff.
+- Keep the body brief. Omit it if it adds no durable value.
 
 ## Examples
 
