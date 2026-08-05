@@ -14,6 +14,10 @@ This repo stores personal coding-agent skills. Optimize changes for editing, mai
   - `SKILL.md` is the orchestration flow and read-only contract.
   - `FINDINGS.md` holds the findings format, scopes, and line-range URL recipe; it doubles as the output contract handed to each reviewer.
   - Depends on the `orchestration` skill for dispatch mechanics.
+- `issue-triage/` contains the `issue-triage` skill.
+  - `SKILL.md` owns the triage state machine and workflow.
+  - `AGENT-BRIEF.md` owns how to write durable agent briefs.
+  - Holds no tracker, label, or template specifics; those resolve from the consuming project's docs.
 - `orchestration/` contains the cross-host dispatch policy.
   - `SKILL.md` owns the compact approval and orchestration protocol.
   - `ROUTING.md` owns active subscription-aware route selection.
