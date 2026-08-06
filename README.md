@@ -2,16 +2,44 @@
 
 Personal coding-agent skills for software design, review, refactoring, and implementation workflows.
 
-## Skills
+## Invocation
 
-- `coding-standards/` — model-invoked TypeScript coding standards and design taste. A thin `SKILL.md` router plus topic files (vocabulary, domain modeling, error handling, boundaries/parsing, module design, async, testing, TypeScript contracts, frontend components, React, Vue, Effect, observability) loaded on demand via progressive disclosure. Covers Node/backend and React/Vue frontends.
-- `prose/` — model-invoked skill for writing human-facing text in a consistent personal voice. A `SKILL.md` holding the core voice plus per-mode files (Slack, commits, pull requests, email) loaded on demand. Use when drafting or editing anything another person will read.
-- `orchestration/` — model-invoked routing for delegation, provider/model/executor selection, dispatch approval, verification, and Claude/Codex/Pi/T3 mechanics. Dated research supports the active subscription-aware policy; calibration instructions remain separate.
-- `issue-triage/` — model-invoked triage workflow that moves issues through a five-role state machine (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). Tracker-agnostic: label strings, disclaimer format, and templates are resolved from the project's own agent docs rather than hardcoded. `AGENT-BRIEF.md` holds the guidance for writing durable agent briefs, loaded on demand.
-- `pr-review/` — user-invoked orchestrated review of a GitHub PR. Dispatches two independent reviewers from different model providers, then consolidates their findings into one Markdown file under `~/.pr-reviews`. Strictly read-only; never edits the PR. Depends on `orchestration`. Detailed findings format (scopes, line-range URLs, suggestion blocks) lives in `FINDINGS.md`, loaded on demand.
-- `pr-summary/` — user-invoked workflow that stages a structured PR description under `~/.pr-drafts`, optionally maps Linear issues and acceptance criteria, and updates GitHub only after approval.
-- `pr-feedback-resolve/` — user-invoked workflow that retrieves complete review threads, stages an editable resolution plan, implements approved commit slices, and optionally replies to or resolves threads.
-- `gh-pr/` — model-invoked GitHub CLI mechanics for complete PR reads and explicitly approved writes, including review-thread replies, resolutions, and submitted reviews.
+### Explicit only
+
+These skills run only when the user invokes them directly.
+
+- `bro/` — restates the previous response in plain human language.
+- `easy-mode/` — enables a persistent, low-energy communication style.
+- `issue-triage/` — moves issues through a tracker-independent triage state machine.
+- `pr-feedback-resolve/` — stages and executes a thread-aware PR feedback plan.
+- `pr-review/` — dispatches two read-only PR reviewers and consolidates their findings.
+- `pr-summary/` — stages a structured PR description with optional Linear issue coverage.
+- `prose/` — writes human-facing text in a consistent personal voice.
+- `tldr/` — explains practical impact without technical jargon.
+
+### Implicit by default
+
+Agents may load these skills automatically when the request matches their description. Users may also invoke them explicitly.
+
+- `coding-standards/` — TypeScript coding standards and design taste.
+- `gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
+- `orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
+
+### Not user-invocable
+
+None.
+
+This category is for model-only background skills marked with `user-invocable: false`. Host support varies; Codex currently documents implicit-invocation policy but not a matching user-invocation restriction.
+
+## Create a skill
+
+Run the interactive scaffolder from the repository root:
+
+```sh
+scripts/scaffold-skill.sh
+```
+
+It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yml`. The default invocation policy allows both implicit and explicit use.
 
 ## Install
 
@@ -19,4 +47,4 @@ Personal coding-agent skills for software design, review, refactoring, and imple
 scripts/link-skills.sh
 ```
 
-Edit `COMMON_SKILLS_DIR` and `TARGET_DIRS` at the top of `scripts/link-skills.sh` to change install targets. The script copies skill folders into `~/.agents/skills`, then symlinks target skill dirs to those common clones.
+Edit `COMMON_SKILLS_DIR` and `TARGET_DIRS` at the top of `scripts/link-skills.sh` to change install targets. The script copies skill folders into `~/.agents/skills`, then symlinks target skill directories to those standalone copies.
