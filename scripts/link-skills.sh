@@ -86,6 +86,13 @@ copy_skill() {
   local source_dir="$1"
   local target_dir="$2"
 
+  while IFS= read -r source_link; do
+    if [[ ! -e "$source_link" ]]; then
+      echo "Broken source symlink: $source_link" >&2
+      exit 1
+    fi
+  done < <(find "$source_dir" -type l -print)
+
   if ((DRY_RUN)); then
     return
   fi
@@ -101,7 +108,12 @@ copy_skill() {
   else
     rm -rf "$target_dir"
     mkdir -p "$target_dir"
-    cp -R "$source_dir/." "$target_dir/"
+    cp -RL "$source_dir/." "$target_dir/"
+  fi
+
+  if find "$target_dir" -type l -print -quit | grep -q .; then
+    echo "Installed skill contains an unresolved symlink: $target_dir" >&2
+    exit 1
   fi
 }
 
