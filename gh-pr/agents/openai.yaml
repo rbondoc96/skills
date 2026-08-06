@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub PR CLI"
+  short_description: "Read and update pull requests with gh"
+  default_prompt: "Use $gh-pr to inspect the current branch pull request and its review threads."
