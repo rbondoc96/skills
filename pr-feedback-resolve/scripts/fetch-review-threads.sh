@@ -1,0 +1,1 @@
+../../gh-pr/scripts/fetch-review-threads.sh
