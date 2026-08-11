@@ -87,7 +87,7 @@ subscription allowance and T3 allowance are both `unvalidated`.
 |---|---|:--:|:--:|:--:|:--:|---|
 | `gpt-5.6-sol` | `high` | A | C | `$$$` | medium | Hard, high-value coding and reasoning |
 | `gpt-5.6-terra` | `medium` | B | C | `$$` | medium | Clear-spec implementation and cost-balanced coding candidate |
-| `gpt-5.6-luna` | `low` | C | C | `$` | medium | Low-risk mechanical or high-volume work after local quality validation |
+| `gpt-5.6-luna` | `max` | C | C | `$` | medium | Low-risk mechanical or high-volume work after local quality validation |
 
 ### Claude routes
 
