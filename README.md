@@ -8,22 +8,22 @@ Personal coding-agent skills for software design, review, refactoring, and imple
 
 These skills run only when the user invokes them directly.
 
-- `bro/` — restates the previous response in plain human language.
-- `easy-mode/` — enables a persistent, low-energy communication style.
-- `issue-triage/` — moves issues through a tracker-independent triage state machine.
-- `pr-feedback-resolve/` — stages and executes a thread-aware PR feedback plan.
-- `pr-review/` — dispatches two read-only PR reviewers and consolidates their findings.
-- `pr-summary/` — stages a structured PR description with optional Linear issue coverage.
+- `dev/bro/` — restates the previous response in plain human language.
+- `dev/easy-mode/` — enables a persistent, low-energy communication style.
+- `dev/issue-triage/` — moves issues through a tracker-independent triage state machine.
+- `dev/pr-feedback-resolve/` — stages and executes a thread-aware PR feedback plan.
+- `dev/pr-review/` — dispatches two read-only PR reviewers and consolidates their findings.
+- `dev/pr-summary/` — stages a structured PR description with optional Linear issue coverage.
+- `dev/tldr/` — explains practical impact without technical jargon.
 - `prose/` — writes human-facing text in a consistent personal voice.
-- `tldr/` — explains practical impact without technical jargon.
 
 ### Implicit by default
 
 Agents may load these skills automatically when the request matches their description. Users may also invoke them explicitly.
 
-- `coding-standards/` — TypeScript coding standards and design taste.
-- `gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
-- `orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
+- `dev/coding-standards/` — TypeScript coding standards and design taste.
+- `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
+- `dev/orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
 
 ### Not user-invocable
 
@@ -39,7 +39,7 @@ Run the interactive scaffolder from the repository root:
 scripts/scaffold-skill.sh
 ```
 
-It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yml`. The default invocation policy allows both implicit and explicit use.
+It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yml`. You can move the generated skill into a domain directory such as `dev/`. The default invocation policy allows both implicit and explicit use.
 
 ## Install
 
@@ -47,4 +47,4 @@ It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yml`. The def
 scripts/link-skills.sh
 ```
 
-Edit `COMMON_SKILLS_DIR` and `TARGET_DIRS` at the top of `scripts/link-skills.sh` to change install targets. The script copies skill folders into `~/.agents/skills`, then symlinks target skill directories to those standalone copies.
+Edit `COMMON_SKILLS_DIR` and `TARGET_DIRS` at the top of `scripts/link-skills.sh` to change install targets. The script discovers skills recursively, including domain paths such as `dev/pr-review/`. It copies each skill into the flat `~/.agents/skills/<skill-name>` namespace, then symlinks target skill directories to those standalone copies. Skill names must be unique across domains.

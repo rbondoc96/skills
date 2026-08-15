@@ -72,7 +72,9 @@ SKILL_DIRS=()
 while IFS= read -r skill_dir; do
   SKILL_DIRS+=("$skill_dir")
 done < <(
-  find "$REPO_ROOT" -mindepth 2 -maxdepth 2 -name SKILL.md -type f \
+  find "$REPO_ROOT" -mindepth 2 -name SKILL.md -type f \
+    -not -path "$REPO_ROOT/.git/*" \
+    -not -path "$REPO_ROOT/deprecated/*" \
     -not -path "$REPO_ROOT/scripts/*" \
     -exec dirname {} \; | sort
 )
@@ -81,6 +83,22 @@ if ((${#SKILL_DIRS[@]} == 0)); then
   echo "No skills found under $REPO_ROOT" >&2
   exit 1
 fi
+
+# Domain directories are source organization only. Installed skills remain flat,
+# so duplicate names would otherwise overwrite the same target directory.
+for ((i = 0; i < ${#SKILL_DIRS[@]}; i++)); do
+  skill_name="$(basename "${SKILL_DIRS[$i]}")"
+
+  for ((j = i + 1; j < ${#SKILL_DIRS[@]}; j++)); do
+    other_skill_name="$(basename "${SKILL_DIRS[$j]}")"
+
+    if [[ "$skill_name" == "$other_skill_name" ]]; then
+      printf 'Duplicate skill name %q:\n  %s\n  %s\n' \
+        "$skill_name" "${SKILL_DIRS[$i]}" "${SKILL_DIRS[$j]}" >&2
+      exit 1
+    fi
+  done
+done
 
 copy_skill() {
   local source_dir="$1"
