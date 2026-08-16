@@ -1,0 +1,5 @@
+interface:
+  display_name: "File Linear Issue"
+  short_description: "File an issue in Linear"
+policy:
+  allow_implicit_invocation: true

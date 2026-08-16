@@ -22,6 +22,7 @@ These skills run only when the user invokes them directly.
 Agents may load these skills automatically when the request matches their description. Users may also invoke them explicitly.
 
 - `dev/coding-standards/` — TypeScript coding standards and design taste.
+- `dev/file-linear-issue/` — files clear, lean issues in Linear.
 - `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
 - `dev/orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
 
