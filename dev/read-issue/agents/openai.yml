@@ -1,0 +1,5 @@
+interface:
+  display_name: "Read Issue"
+  short_description: "Read an issue in Linear or Jira."
+policy:
+  allow_implicit_invocation: true
