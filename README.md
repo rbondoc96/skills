@@ -40,7 +40,7 @@ Run the interactive scaffolder from the repository root:
 scripts/scaffold-skill.sh
 ```
 
-It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yml`. You can move the generated skill into a domain directory such as `dev/`. The default invocation policy allows both implicit and explicit use.
+It creates `<skill-name>/SKILL.md` and `<skill-name>/agents/openai.yaml`. You can move the generated skill into a domain directory such as `dev/`. The default invocation policy allows both implicit and explicit use.
 
 ## Install
 

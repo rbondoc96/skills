@@ -7,7 +7,7 @@ This repository is the source of truth for personal coding-agent skills used by 
 - Each active top-level skill directory contains `SKILL.md`.
 - Put detailed, selectively loaded guidance in `references/`.
 - Put deterministic or repeatedly rewritten operations in `scripts/`.
-- Put OpenAI UI and invocation metadata in `agents/openai.yml` or an existing `agents/openai.yaml`.
+- Put OpenAI UI and invocation metadata in `agents/openai.yaml` or an existing `agents/openai.yaml`.
 - Keep retired skills under `deprecated/`.
 - Use `scripts/scaffold-skill.sh` to start a skill and `scripts/link-skills.sh` to install skills.
 
@@ -34,7 +34,7 @@ Some source resources are relative symlinks to a canonical file in another skill
 
 Choose one policy deliberately:
 
-| Policy | `SKILL.md` | `agents/openai.yml` |
+| Policy | `SKILL.md` | `agents/openai.yaml` |
 |---|---|---|
 | Implicit and explicit | Omit invocation restriction fields | `allow_implicit_invocation: true` or omit the policy |
 | Explicit only | `disable-model-invocation: true` | `allow_implicit_invocation: false` |
@@ -60,14 +60,14 @@ Choose one policy deliberately:
 - Use `license`, `compatibility`, and string-valued `metadata` only when they record useful distribution or environment facts.
 - Use `argument-hint` and `arguments` only when the workflow accepts positional input.
 - Treat `allowed-tools` as experimental. Avoid active permission, model, context, or other host-specific fields unless the workflow requires them and their consequences are understood.
-- Keep `agents/openai.yml` interface text consistent with `SKILL.md`.
+- Keep `agents/openai.yaml` interface text consistent with `SKILL.md`.
 - Quote interface strings. A `default_prompt` must mention `$<skill-name>` explicitly.
 
 ## Verification
 
 - Run every new or changed script with representative valid and invalid input.
 - Run `bash -n` for Bash scripts and `git diff --check` for all changes.
-- Parse changed YAML frontmatter and `agents/openai.yml` files.
+- Parse changed YAML frontmatter and `agents/openai.yaml` files.
 - Run `scripts/link-skills.sh --dry-run` after changing skill discovery, symlinks, or installation behavior.
 - Verify every source symlink resolves and test that installer copy semantics produce regular files.
 - Avoid checks that mutate unrelated files or start long-running services.

@@ -150,7 +150,7 @@ mkdir -p "$temp_dir/agents"
   printf '  default_prompt: %s\n' "$(yaml_quote "Use \$$skill_name to complete the requested workflow.")"
   printf '%s\n' 'policy:'
   printf '  allow_implicit_invocation: %s\n' "$allow_implicit"
-} > "$temp_dir/agents/openai.yml"
+} > "$temp_dir/agents/openai.yaml"
 
 mv "$temp_dir" "$skill_dir"
 trap - EXIT
@@ -158,4 +158,4 @@ trap - EXIT
 printf '%s\n' \
   "Created $skill_dir" \
   "Invocation: $invocation_label" \
-  "Next: replace the scaffold hints, then validate SKILL.md and agents/openai.yml."
+  "Next: replace the scaffold hints, then validate SKILL.md and agents/openai.yaml."
