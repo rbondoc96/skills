@@ -1,6 +1,7 @@
 ---
 name: orchestration
 description: Route delegation, model selection, subagents, workflows, parallel work, and multi-slice execution. Use whenever the user or another skill requests delegation, independent agents, model routing, or a dispatch policy.
+disable-model-invocation: true
 ---
 
 # Orchestration
