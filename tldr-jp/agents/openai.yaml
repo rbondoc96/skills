@@ -1,0 +1,6 @@
+interface:
+  display_name: "TLDR JP"
+  short_description: "Recap the session in Japanese with furigana and vocabulary notes."
+
+policy:
+  allow_implicit_invocation: false

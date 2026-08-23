@@ -15,6 +15,7 @@ These skills run only when the user invokes them directly.
 - `dev/pr-review/` — dispatches two read-only PR reviewers and consolidates their findings.
 - `dev/pr-summary/` — stages a structured PR description with optional Linear issue coverage.
 - `dev/tldr/` — explains practical impact without technical jargon.
+- `tldr-jp/` — recaps the session in Japanese as a learning exercise.
 - `prose/` — writes human-facing text in a consistent personal voice.
 
 ### Implicit by default
