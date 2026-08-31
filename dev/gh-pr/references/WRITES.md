@@ -18,19 +18,23 @@ Use `gh pr comment <number> --repo <owner>/<repo> --body-file <path>`. Post only
 
 ## Review-thread reply
 
-Reply to the top-level review comment, not to another reply:
+Use the thread node ID and a body file. The helper uses `addPullRequestReviewThreadReply` and verifies the returned comment ID, URL, and body:
 
 ```bash
-gh api --method POST \
-  repos/<owner>/<repo>/pulls/<number>/comments/<comment-database-id>/replies \
-  -F body=@<path>
+scripts/reply-review-thread.sh <thread-node-id> <body-file>
 ```
 
-Read the returned comment or thread back and verify the body and author.
+The calling workflow owns confirmation. This script performs the mutation immediately.
 
 ## Resolve or reopen a thread
 
-Use the GraphQL `resolveReviewThread` or `unresolveReviewThread` mutation with the thread node ID. Verify the returned and subsequently queried `isResolved` state. Resolution never substitutes for a reply.
+Resolve with the thread node ID. The helper uses `resolveReviewThread` and verifies the returned thread ID and `isResolved` state:
+
+```bash
+scripts/resolve-review-thread.sh <thread-node-id>
+```
+
+The calling workflow owns confirmation and any policy requiring a successful reply first. This script performs the mutation immediately. Use GraphQL `unresolveReviewThread` directly when an approved workflow needs to reopen a thread. Resolution never substitutes for a reply.
 
 ## Submit a review
 
