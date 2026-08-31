@@ -1,0 +1,6 @@
+interface:
+  display_name: "Address Stack Feedback"
+  short_description: "Address one PR's unresolved feedback in a gh-stack"
+  default_prompt: "Use $address-stack-feedback to address unresolved review threads on the current stacked PR."
+policy:
+  allow_implicit_invocation: false

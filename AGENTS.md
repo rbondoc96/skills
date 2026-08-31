@@ -18,7 +18,9 @@ Some source resources are relative symlinks to a canonical file in another skill
 - `coding-standards/SKILL.md` routes to its topic files.
 - `prose/` owns human-facing voice, including canonical PR description and reply guidance.
 - `gh-pr/` owns reusable GitHub CLI and API mechanics.
-- `pr-summary/` and `pr-feedback-resolve/` own their workflow decisions, templates, and staged artifacts; they link shared prose and GitHub mechanics from their owners.
+- `pr-summary/` owns its workflow decisions, templates, and staged artifacts.
+- `address-pr-feedback/` and `address-stack-feedback/` own their feedback workflow decisions; they link shared prose and GitHub mechanics from their owners.
+- `pr-feedback-resolve/` is a compatibility alias for `address-pr-feedback/` and must not duplicate its workflow.
 - `orchestration/` owns dispatch policy, model/provider routing, host adapters, and approval mechanics. Dated research is evidence, not active policy.
 - `issue-triage/` owns the tracker-independent state machine. Consuming projects own tracker, label, and template details.
 

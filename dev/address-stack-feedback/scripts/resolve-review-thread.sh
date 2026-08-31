@@ -1,0 +1,1 @@
+../../gh-pr/scripts/resolve-review-thread.sh

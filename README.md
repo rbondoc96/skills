@@ -11,7 +11,9 @@ These skills run only when the user invokes them directly.
 - `dev/bro/` — restates the previous response in plain human language.
 - `dev/easy-mode/` — enables a persistent, low-energy communication style.
 - `dev/issue-triage/` — moves issues through a tracker-independent triage state machine.
-- `dev/pr-feedback-resolve/` — stages and executes a thread-aware PR feedback plan.
+- `dev/address-pr-feedback/` — addresses unresolved review threads on one non-stacked PR.
+- `dev/address-stack-feedback/` — addresses unresolved review threads on one PR in a `gh-stack`.
+- `dev/pr-feedback-resolve/` — compatibility alias for `address-pr-feedback`.
 - `dev/pr-review/` — dispatches two read-only PR reviewers and consolidates their findings.
 - `dev/pr-summary/` — stages a structured PR description with optional Linear issue coverage.
 - `dev/tldr/` — explains practical impact without technical jargon.
