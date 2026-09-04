@@ -24,7 +24,7 @@ Address unresolved review threads on one non-stacked PR. Do not include PR-level
 
 ## Implement locally
 
-1. Classify each thread as `address`, `reply`, `clarify`, `defer`, or `no-action`. Identify duplicates and conflicts.
+1. Triage every unresolved thread before changing anything. Read [`references/MERGE_BLOCKERS.md`](references/MERGE_BLOCKERS.md) and apply its dispositions and merge-blocker bar. Report the triage and get it approved. Identify duplicates and conflicts.
 2. Inspect the dirty-worktree baseline. Preserve unrelated changes and stop when they overlap required edits.
 3. Make the selected changes, run relevant checks, and create focused local commits. No plan artifact or pre-implementation approval is required.
 4. Draft one reply per thread that needs a response. Read [`references/PR_WRITING.md`](references/PR_WRITING.md). Usually use one or two sentences. Use bullets only for three or more distinct points.

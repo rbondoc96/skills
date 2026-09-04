@@ -1,0 +1,1 @@
+../../merge-blockers/references/CLOSURE_MODE.md

@@ -25,9 +25,19 @@ Address unresolved review threads on one target PR in a locally tracked linear `
 
 Read [`references/STACK_OPERATIONS.md`](references/STACK_OPERATIONS.md) before changing the stack.
 
+## Stack-aware triage
+
+Extend `references/MERGE_BLOCKERS.md` with the stack's own costs and escape hatches:
+
+- Inspect branches above the target before choosing a disposition. Check whether a later branch removes the code, replaces the contract, introduces the reported path, changes the schema, or already fixes the concern.
+- Add the disposition `defer to later stack PR`: the behavior appears only in a named later PR, or that later PR intentionally replaces the affected contract. Name the exact PR and explain why the target stays safe merged on its own.
+- Weigh the cost of changing a lower branch: descendant rebases, semantic conflicts, replaced review SHAs, repeated checks, and migration-history consequences.
+- Add two fields to each reported block: higher-stack analysis, and stack and migration consequences.
+- State separately whether later stack reviews may proceed. Do not block them when their feature diffs are independent.
+
 ## Implement locally
 
-1. Classify each target-PR thread as `address`, `reply`, `clarify`, `defer`, or `no-action`. Identify duplicates and conflicts.
+1. Triage every unresolved target-PR thread before changing anything. Read [`references/MERGE_BLOCKERS.md`](references/MERGE_BLOCKERS.md) and apply it, extended by the stack rules below. Report the triage and get it approved. Identify duplicates and conflicts.
 2. Change only the target branch's layer. If a fix belongs in an ancestor branch or requires moving commits or restructuring the stack, stop and ask the user to handle that owning PR separately.
 3. Run relevant checks and create focused commits on the target branch.
 4. If the target gained commits, rebase its affected descendants with the canonical upstack command in `STACK_OPERATIONS.md`. Resolve only clear conflicts. If conflict ownership or intent is ambiguous, abort the whole stack rebase and report the blocker. Skip rebase and push for a reply-only run.

@@ -24,6 +24,16 @@ Preserve these identifiers for later writes:
 - Top-level review comment database ID for replies.
 - Comment and thread URLs for human review.
 
+## Review rounds
+
+Run:
+
+```bash
+scripts/count-reviewed-heads.sh <owner> <repo> <number>
+```
+
+The script returns the distinct head commits reviewed by someone other than the author, the latest reviewed head, and whether the current head has been reviewed. It counts commits, not comments, so repeated reviews of one commit do not inflate the total.
+
 ## Completion
 
 Complete a feedback read only after timeline comments, submitted reviews, requested changes, and review threads are all accounted for. State explicitly when permissions or API limits prevent complete retrieval.
