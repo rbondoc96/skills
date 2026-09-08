@@ -1,0 +1,1 @@
+../../address-pr-feedback/references/GENERATION_FOOTER.md

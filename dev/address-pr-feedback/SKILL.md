@@ -28,7 +28,7 @@ Address unresolved review threads on one non-stacked PR. Do not include PR-level
 2. Inspect the dirty-worktree baseline. Preserve unrelated changes and stop when they overlap required edits.
 3. Make the selected changes, run relevant checks, and create focused local commits. No plan artifact or pre-implementation approval is required.
 4. Draft one reply per thread that needs a response. Read [`references/PR_WRITING.md`](references/PR_WRITING.md). Usually use one or two sentences. Use bullets only for three or more distinct points.
-5. Render each complete reply with `scripts/render-review-reply.sh`. Pass the exact model ID, control name, and value supplied by the host. The script formats metadata but does not discover it. If the host does not expose exact metadata, stop before publishing replies rather than guessing.
+5. Render each complete reply with `scripts/render-review-reply.py`. Follow [`references/GENERATION_FOOTER.md`](references/GENERATION_FOOTER.md) when choosing the model information.
 
 ## Confirm the remote phase
 

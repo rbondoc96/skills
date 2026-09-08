@@ -43,7 +43,7 @@ Extend `references/MERGE_BLOCKERS.md` with the stack's own costs and escape hatc
 4. If the target gained commits, rebase its affected descendants with the canonical upstack command in `STACK_OPERATIONS.md`. Resolve only clear conflicts. If conflict ownership or intent is ambiguous, abort the whole stack rebase and report the blocker. Skip rebase and push for a reply-only run.
 5. Re-run `gh stack view --json`. Require a clean worktree, the expected branch order, and no `needsRebase` value in the affected segment. When a rebase occurred, run relevant checks on the rebased stack tip if the target is not the tip. Record every active branch's before and after commit.
 6. Draft one reply per thread that needs a response. Read [`references/PR_WRITING.md`](references/PR_WRITING.md). Usually use one or two sentences. Use bullets only for three or more distinct points.
-7. Render each complete reply with `scripts/render-review-reply.sh`. Pass the exact model ID, control name, and value supplied by the host. The script formats metadata but does not discover it. If the host does not expose exact metadata, stop before publishing replies rather than guessing.
+7. Render each complete reply with `scripts/render-review-reply.py`. Follow [`references/GENERATION_FOOTER.md`](references/GENERATION_FOOTER.md) when choosing the model information.
 
 ## Confirm the remote phase
 

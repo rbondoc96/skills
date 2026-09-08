@@ -1,1 +1,0 @@
-../../address-pr-feedback/scripts/render-review-reply.sh
