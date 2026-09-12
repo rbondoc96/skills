@@ -9,6 +9,7 @@ Personal coding-agent skills for software design, review, refactoring, and imple
 These skills run only when the user invokes them directly.
 
 - `dev/bro/` — restates the previous response in plain human language.
+- `dev/codex/` — delegates a review or implementation task to the Codex CLI.
 - `dev/easy-mode/` — enables a persistent, low-energy communication style.
 - `dev/issue-triage/` — moves issues through a tracker-independent triage state machine.
 - `dev/merge-blockers/` — triages review findings against the merge-blocker bar.
