@@ -24,6 +24,8 @@ Some source resources are relative symlinks to a canonical file in another skill
 - `pr-feedback-resolve/` is a compatibility alias for `address-pr-feedback/` and must not duplicate its workflow.
 - `orchestration/` owns dispatch policy, model/provider routing, host adapters, and approval mechanics. Dated research is evidence, not active policy.
 - `issue-triage/` owns the tracker-independent state machine. Consuming projects own tracker, label, and template details.
+- `review-panel/` owns the specialist reviewer catalog, roster confirmation, evidence contract, and saved review records. It is standalone: it carries its own per-reviewer route syntax and read-only executor recipes and does not depend on `orchestration`.
+- `pr-review/` owns the two-provider GitHub PR review that routes through `orchestration`.
 
 ## Hard rules
 
