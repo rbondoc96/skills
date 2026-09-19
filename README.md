@@ -27,7 +27,7 @@ These skills run only when the user invokes them directly.
 Agents may load these skills automatically when the request matches their description. Users may also invoke them explicitly.
 
 - `dev/review-panel/` — reviews changes with a confirmed or named roster of 12 available specialists; saves individual reports, finding decisions, and a combined report.
-- `dev/coding-standards/` — TypeScript coding standards and design taste.
+- `dev/coding-standards/` — coding standards routed by language, domain, framework, and tool. Covers TypeScript, PHP/Laravel, and a provisional Python baseline; shared topics cover frontend, backend, persistence, data processing, and AI integrations. Detailed guidance and routing checks live in `references/`.
 - `dev/file-linear-issue/` — files clear, lean issues in Linear.
 - `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
 - `dev/html-communication/` — publishes a document or a set of UI mock variants as one self-contained HTML file on Postplan.

@@ -1,5 +1,7 @@
 # Vue
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Vue-specific rules (Vue 3, `<script setup>`, Composition API). Read [`FRONTEND_COMPONENTS.md`](FRONTEND_COMPONENTS.md) first — component-as-module, prop design, server state, and accessibility live there. This file covers reactivity, props/emits, composables, and Pinia.
 
 ## Non-negotiables

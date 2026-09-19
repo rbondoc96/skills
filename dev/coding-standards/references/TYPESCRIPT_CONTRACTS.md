@@ -1,5 +1,7 @@
 # TypeScript Contracts
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 TypeScript should preserve proof obligations instead of erasing them. Keep contracts precise, immutable by default, documented at exports, and enforced by boring toolchain checks.
 
 ## Non-negotiables
@@ -327,7 +329,7 @@ Use ordinary `if/else` when branches are true peers in a domain decision.
 
 Export only intended caller interfaces. Do not export internals just for tests.
 
-JSDoc every directly exported function, class, constant, type, and public method on exported classes. Document generics with `@template`. Document typed expected failures as return values, not `@throws`. Use `@throws` only for defects, framework-required behavior, or temporary unimplemented paths.
+JSDoc every directly exported function, class, constant, type, and public method on exported classes. Document generics with `@template`. Document expected failures in the channel the function uses: return values for result-based code, `@throws` for typed thrown failures. [Error handling](ERROR_HANDLING.md) owns error-idiom selection. Also document thrown defects, framework-required behavior, and temporary unimplemented paths when applicable.
 
 Comments explain invariants, trade-offs, safety, and non-obvious domain rules. Avoid comments that narrate obvious syntax.
 

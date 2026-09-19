@@ -1,5 +1,7 @@
 # Testing and Verification
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Tests should prove behavior through the same interfaces callers use. Confidence comes from observable outcomes at real seams, not from spying on implementation details.
 
 ## Vocabulary
@@ -108,15 +110,13 @@ Generate invalid boundary inputs when testing rejection, but do not label them v
 
 ## Persistence behavior
 
-When correctness depends on SQL, schema constraints, transactions, migrations, or query semantics, use a representative local database.
+Read [Persistence](PERSISTENCE.md) for the required database evidence. The examples below apply that requirement to TypeScript adapters.
 
 For ORM persistence tests (e.g. Drizzle):
 
 - use a representative local database (in-memory `better-sqlite3`, or a real Postgres for Postgres-specific semantics);
 - run the real migrations before the suite;
 - exercise the production External Adapter Module through its service-facing interface.
-
-A hand-written in-memory fake is not proof of SQL/schema/transaction behavior.
 
 ## Runtime behavior
 

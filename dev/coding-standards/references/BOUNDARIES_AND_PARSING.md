@@ -1,5 +1,7 @@
 # Boundaries and Parsing
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Every external, serialized, persisted, or framework-shaped value is less structured than your domain model. Parse at the seam, pass refined values inward, and project explicitly on the way out.
 
 ## Vocabulary
@@ -138,7 +140,7 @@ Use schema-inferred row/insert/update DTOs where the storage library supports th
 
 ## Runtime and serialization boundaries
 
-Values crossing process, runtime, RPC, queue, workflow, Worker/DO/Agent, or structured-clone boundaries must be serializable for that transport.
+Values crossing process, runtime, RPC, queue, workflow, worker, or structured-clone boundaries must be serializable for that transport.
 
 Do not send rich local objects unless the transport explicitly preserves them:
 

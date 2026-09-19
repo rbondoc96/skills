@@ -1,5 +1,7 @@
 # React
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 React-specific rules. Read [`FRONTEND_COMPONENTS.md`](FRONTEND_COMPONENTS.md) first — component-as-module, prop design, server state, and accessibility live there. This file covers hooks, effects, derived state, rendering, and React-specific seams.
 
 ## Non-negotiables

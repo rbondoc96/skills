@@ -1,5 +1,7 @@
 # Vocabulary
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Use these exact terms in explanations, reviews, and code-facing design notes when the concept applies. Topic files may define only topic-local terms near their rules.
 
 ## Failure language

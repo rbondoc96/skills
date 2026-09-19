@@ -1,5 +1,7 @@
 # Effect
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Status: **Work in progress**.
 
 This file captures the currently settled Effect standards. Do not invent additional Effect style rules beyond this file and the repository's local conventions.

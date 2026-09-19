@@ -1,96 +1,74 @@
 ---
 name: coding-standards
-description: TypeScript coding standards and design taste. Use when working on TypeScript code; when adding or changing domain models, modules, adapters, parsers, typed errors, async workflows, tests, TypeScript contracts, React/Vue components, or Effect code; or when another engineering skill needs these coding standards.
+description: Coding standards and design taste. Use when designing, implementing, refactoring, or reviewing code, including TypeScript, Python, and PHP; frontend and backend code; persistence, data processing, and AI integrations; or when another engineering skill needs coding standards. Routes to language, framework, and tool guidance for the touched code.
 ---
 
-# Coding Standards
+# Coding standards
 
-Use these standards while designing and editing TypeScript. They encode a specific design taste: correctness first, precise domain modeling, typed failures, deep modules, explicit boundaries, real-seam tests, strict TypeScript, and boring operational safety. They apply equally to Node/backend services and to React and Vue frontends.
+Apply the shared principles below, then load the references selected by the task. This skill is standalone. References describe scoped preferences, not a requirement to adopt every listed library.
 
-This skill is standalone. Load the topic files that match the code you are touching; do not treat the top-level summary as the whole standard.
+## Shared principles
 
-## Core tenets
+- Establish domain invariants through types, constructors, parsing, and legal transitions. Static annotations alone do not validate external data; pass validated values onward.
+- Expose cohesive behavior behind small interfaces. Make dependencies and side effects clear; introduce adapters where they own translation, policy, or real substitution. Framework isolation is a scoped architectural choice.
+- Give callers meaningful failure contracts. Distinguish expected failures from defects, preserve useful causes safely, and match the established error channel on the changed path.
+- Keep secrets and sensitive payloads out of errors, logs, traces, metrics, and snapshots. Preserve existing reporting and correlation through explicit safe fields.
+- Give resources and background work an owner responsible for lifetime, cleanup, cancellation, and failure reporting.
+- Test observable behavior through caller-facing interfaces. Substitute external behavior through intentional seams or framework testing facilities; verify database and runtime claims in representative environments.
+- Improve the smallest coherent changed path. Broad migrations, compatibility layers, rollout plans, backfills, and deployment sequencing require explicit user intent.
 
-- Correctness, safety, debuggability, boundary integrity, and test integrity come before convenience.
-- Local conventions matter when they are compatible with these standards.
-- Parse boundary input before it reaches core logic; pass refined/domain values inward.
-- Model invariants in types, constructors, parsers, and transitions.
-- Model expected failures as typed, tagged values — whether the channel is a `Result`, Effect, or a typed thrown error. Reserve undocumented throws for defects.
-- Design deep modules — including components — with intentional seams, small interfaces, and explicit dependencies.
-- Verify observable behavior through real seams.
-- Keep TypeScript contracts strict, local, documented, and boring.
-- Improve changed paths without forcing broad migrations unless explicitly requested.
-- Do not design for backwards compatibility, migrations, rollout, backfill, dual-write/read paths, or deployment sequencing unless the user explicitly asks. Treat new designs as the desired target state, not a migration plan.
+## Apply the standards
 
-## Non-negotiables
+1. **Inspect the touched area.** Read applicable project instructions, representative neighboring code, imports, and the nearest manifests/configuration. Identify languages, execution environments, responsibilities, dependencies, error conventions, and verification commands, or confirm that a choice is absent.
+2. **Select references per responsibility.** Match all applicable rows below and read their linked prerequisites. A dependency elsewhere in the repository is not enough evidence. For a new project, use the requested stack; ask only when an unresolved choice materially affects the work.
+3. **Apply rules within scope.** Language, domain, and framework references combine; they do not compete by load order. A framework reference supplies its own implementation of a shared principle. Explicit user and applicable project instructions take precedence. Compatible local conventions take precedence over defaults. Surface unresolved conflicts rather than silently inventing an exception.
+4. **Revisit routing when scope expands.** In mixed-language changes, retain which rules govern each area. Apply shared principles and matching domain topics to uncovered languages/tools; name the coverage gap and use local conventions rather than borrowing another language's syntax or library defaults.
+5. **Verify the changed behavior.** Use the project's commands and proportionate checks at the affected boundaries. Finish when every touched responsibility has its applicable standards accounted for and every material changed behavior has evidence, or a stated verification limitation.
 
-These are not aesthetic preferences. When they conflict with existing code, preserve compatibility at the seam and improve the changed path rather than copying the violation.
+## Language routing
 
-- Untrusted, serialized, persisted, or framework-shaped input is parsed before core/service logic sees it.
-- Decoded data is not trusted with `as SomeType`.
-- Expected failures are represented as typed, tagged values (not bare strings, context-free `Error`, or untyped rejects), regardless of idiom.
-- Defects stay loud (throw / `Panic`); they are never silently swallowed or returned as ordinary expected failures.
-- Secrets do not enter errors, logs, traces, metrics, snapshots, or panic summaries.
-- Raw platform bindings and framework types stay at composition seams or tightly local External Adapter Modules.
-- Dependencies are explicit; hidden globals and ambient time/randomness/IDs do not drive service behavior.
-- Tests prove observable behavior through module interfaces or real seams; module mocks and method spies are out.
-- Type escape hatches are local, justified with `SAFETY:`, and hidden behind precise interfaces.
-- Don't use `||` to coalesce values by default. Use `??` or `||` appropriately.
-- Strict equality (`===`) only; never loose equality (`==`).
-- `as any` is banned except as a justified, `SAFETY:`-commented, lint-suppressed escape hatch (see [`TYPESCRIPT_CONTRACTS.md`](TYPESCRIPT_CONTRACTS.md)).
-- Never declare a native TypeScript `enum`; use a POJO `as const` object instead (see [`DOMAIN_MODELING.md`](DOMAIN_MODELING.md)).
-- Promises are owned: awaited, returned, collected, or handed to explicit detached-work machinery.
-- Broad migrations require explicit user intent.
-- Backwards compatibility, rollout, deployment sequencing, data backfills, and dual-write/read migration paths require explicit user intent; do not add them as default design concerns.
-
-## Error idiom: audit first
-
-These standards support both **errors-as-values** (greenfield default, via `better-result` or Effect) and **throw-style**. Before changing error handling: audit the touched module's idiom and match it on the changed path. Default new/greenfield code to errors-as-values. Never mix idioms within one layer. Full rules in [`ERROR_HANDLING.md`](ERROR_HANDLING.md).
-
-## How to apply the standards
-
-1. **Audit the local codebase.** Before choosing a library, pattern, External Adapter Module shape, schema style, error representation, error idiom, test strategy, observability mechanism, component/state pattern, or module layout, inspect until the existing choice for each touched concern is identified or confirmed absent.
-2. **Classify the change.** Identify the concerns touched: domain state, parsing, errors, observability, modules, async, tests, TypeScript contracts, frontend components, React, Vue, or Effect.
-3. **Load every relevant topic file.** The top-level summary is only the routing layer.
-4. **Apply safety standards before local convention.** Follow established architecture where compatible. When local convention violates a non-negotiable, isolate compatibility at the boundary and improve the changed path.
-5. **Prefer the smallest coherent improvement.** Do not start unrelated migrations, backwards-compatibility paths, rollout plans, backfill plans, or deployment sequencing. Do not add abstractions, External Adapter Modules, Service Modules, libraries, workflows, or config layers without a concrete reason.
-6. **Verify through the right seam.** Tests should observe outcomes at the module or system interface that callers use.
-7. **Name trade-offs.** If a standard cannot be fully applied without broad migration, state the compatibility constraint and the local improvement made.
-
-## Topic routing
-
-Load the files whose triggers match the task.
-
-| If the change touches... | Load... |
+| Touched code | Read |
 |---|---|
-| Shared coding-standard terms, adoption language, failure/boundary/domain/module/runtime vocabulary | [`VOCABULARY.md`](VOCABULARY.md) |
-| Domain values, invariants, branded types, value classes, state machines, lifecycle transitions, optionality, `Partial<T>`, boolean flags, POJO enums, operation inputs, exhaustive variants, persisted lifecycle constraints | [`DOMAIN_MODELING.md`](DOMAIN_MODELING.md) |
-| Expected failures, error idiom selection (values vs throw), custom errors, `better-result`, not-found semantics, cancellation classification, startup config diagnostics, catch/classification | [`ERROR_HANDLING.md`](ERROR_HANDLING.md) |
-| Tracing, logging, telemetry, safe summaries, secrets, redaction, preserving reporting/correlation hooks | [`OBSERVABILITY.md`](OBSERVABILITY.md) |
-| Domain Modules, Service Modules, External Adapter Modules, interfaces, seams, dependency injection, functional core/shell, resource ownership | [`DESIGNING_MODULES.md`](DESIGNING_MODULES.md) |
-| HTTP/RPC/queue/storage/env parsing, DTOs, codecs, Zod schemas, projections, config, runtime-hop payloads | [`BOUNDARIES_AND_PARSING.md`](BOUNDARIES_AND_PARSING.md) |
-| Cancellation, promise ownership, concurrency, idempotency, transactions, retries, workflows, detached work | [`ASYNC_AND_WORKFLOWS.md`](ASYNC_AND_WORKFLOWS.md) |
-| Tests, property tests, real seams, persistence/runtime verification, risk-matched evidence | [`TESTING_AND_VERIFICATION.md`](TESTING_AND_VERIFICATION.md) |
-| Casts, `any`, catch values, thenables, readonly contracts, collections, optionality, object spread/projection/delete, guard clauses, member ordering, exports, imports, barrels, JSDoc, toolchain | [`TYPESCRIPT_CONTRACTS.md`](TYPESCRIPT_CONTRACTS.md) |
-| Any component, props, component-local vs server vs global state, data fetching (TanStack Query), forms, Tailwind, accessibility — framework-agnostic | [`FRONTEND_COMPONENTS.md`](FRONTEND_COMPONENTS.md) |
-| React components, hooks, effects, derived state, keys, memoization, context, server components | [`REACT.md`](REACT.md) |
-| Vue SFCs, Composition API, `ref`/`reactive`/`computed`, props/emits, composables, Pinia stores | [`VUE.md`](VUE.md) |
-| Established Effect responsibilities, Effect services/layers, typed errors, Schema, Redacted, Effect testing/RPC | [`EFFECT.md`](EFFECT.md) |
+| TypeScript, including typed component scripts | [TypeScript contracts](references/TYPESCRIPT_CONTRACTS.md), plus matching TypeScript topics below |
+| Python | [Python](references/PYTHON.md), a provisional baseline with conditional tool guidance |
+| PHP | [PHP](references/PHP.md) |
 
-## Strong defaults
+## Domain and framework routing
 
-Use the repository's established choice when it exists and satisfies these standards. When no established choice exists, load the topic file that owns the concern and follow its strong defaults. Default libraries when nothing is established: `better-result` for Results, Zod at boundaries, TanStack Query for server state, Pinia (Vue) with minimal global state, Vitest, Oxlint + Oxfmt.
+These topics apply across languages unless their trigger says otherwise. A language does not imply a domain: a Python script or PHP value object is not automatically backend work.
 
-Do not treat this root file as enough context for library, runtime, schema, error, testing, frontend, Effect, or toolchain choices.
+| Touched responsibility | Read |
+|---|---|
+| User interfaces, templates, forms, interaction, or client state | [Frontend](references/FRONTEND.md) |
+| Server request handling, authorization, service orchestration, or background jobs | [Backend](references/BACKEND.md) |
+| Database queries, persisted invariants, transactions, or concurrent writes | [Persistence](references/PERSISTENCE.md) |
+| Batch imports, exports, record transformation, or partial-data failures | [Data processing](references/DATA_PROCESSING.md) |
+| Model calls, generated output, model-requested tool execution, model-call retries, or model usage accounting | [AI integrations](references/AI_INTEGRATIONS.md) |
+| Laravel controllers, requests, actions, Eloquent, resources, templates, jobs, or framework tests | [Laravel](references/LARAVEL.md), alongside PHP and matching domain topics |
+| TypeScript components, props, client/server state, data fetching, or styling | [TypeScript components](references/FRONTEND_COMPONENTS.md) |
+| TypeScript React components, hooks, effects, context, or server components | [React](references/REACT.md) |
+| Vue components using TypeScript, reactivity, composables, or Pinia | [Vue](references/VUE.md) |
+| TypeScript responsibilities already using Effect services, schemas, error channels, resources, or tests | [Effect](references/EFFECT.md) |
 
-## Rejected framings
+FastAPI, Pydantic, SQLAlchemy, and Python test/tool choices are conditional sections in the Python reference. Read the applicable section when that tool is used or being selected for the touched responsibility. Tool presence alone does not authorize adoption or migration. Check installed versions before applying version-specific APIs.
 
-- **"The existing code throws, so new expected failures can throw bare strings."** Throw-style still requires typed, tagged error classes and `@throws` docs. Match the idiom, keep the rigor.
-- **"Errors-as-values is the preferred style, so I'll convert this throw-style codebase."** Match the established idiom on the changed path; convert only with explicit intent.
-- **"Validation is enough."** Parsing must return the refined value and pass it inward.
-- **"A wrapper is architecture."** A pass-through module earns its keep only when it hides complexity, owns policy, or translates across a real seam.
-- **"Mocks make tests isolated."** Module mocks isolate the wrong thing. Replace behavior through real seams.
-- **"Types are proof."** Serialized data, DB rows, runtime-hop payloads, and API responses become less structured at runtime. Parse them.
-- **"Future flexibility justifies an interface."** A seam is real when behavior varies, a boundary translates, or tests substitute through an intentional seam.
-- **"A lint suppression is a fix."** Suppressions must be targeted and explain the safety invariant.
-- **"A `useEffect` will sync it."** Most derived state is computed, not effect-synced. An effect is for external-system synchronization, not for deriving values (see [`REACT.md`](REACT.md)).
+## TypeScript topic routing
+
+These existing topics retain TypeScript-specific architecture, syntax, error, and library preferences. Their broader-sounding titles do not make them standards for Python or PHP.
+
+| TypeScript concern | Read |
+|---|---|
+| Shared terms used by the TypeScript topic files | [Vocabulary](references/VOCABULARY.md) |
+| Domain values, invariants, brands, value classes, variants, or lifecycle transitions | [Domain modeling](references/DOMAIN_MODELING.md) |
+| Error channels, custom errors, catch/classification, absence, or cancellation failures | [Error handling](references/ERROR_HANDLING.md) |
+| Logging, tracing, diagnostics, redaction, or reporting hooks | [Observability](references/OBSERVABILITY.md) |
+| Module interfaces, adapters, dependency injection, functional core/shell, or resource ownership | [Designing modules](references/DESIGNING_MODULES.md) |
+| HTTP, queue, storage, configuration, or runtime payload parsing and projection | [Boundaries and parsing](references/BOUNDARIES_AND_PARSING.md) |
+| Cancellation, promises, concurrency, retries, or workflow ownership | [Async and workflows](references/ASYNC_AND_WORKFLOWS.md) |
+| Tests, generators, database/runtime verification, or test strategy | [Testing and verification](references/TESTING_AND_VERIFICATION.md) |
+
+## Maintaining this skill
+
+Keep each rule with its owning language, domain, or tool; link to it from consumers. Add a separate reference when its trigger represents a distinct branch with enough guidance to justify loading it independently. Use generic examples, public framework APIs, and project-local concepts rather than names or dependencies from a particular organization.
+
+When changing routing, check the [routing examples](references/ROUTING_EXAMPLES.md). They are maintenance cases, not prerequisites for ordinary coding tasks.

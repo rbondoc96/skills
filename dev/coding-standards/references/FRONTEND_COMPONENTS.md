@@ -1,5 +1,9 @@
 # Frontend Components
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
+Read [Frontend](FRONTEND.md) for shared interaction, rendering, and accessibility rules.
+
 A component is a module. Everything in [`DESIGNING_MODULES.md`](DESIGNING_MODULES.md) applies: deep interface, small surface, explicit dependencies, no leaky internals. This file holds the framework-agnostic rules shared by React and Vue; the framework files add idiom-specific detail.
 
 ## Vocabulary
@@ -17,12 +21,9 @@ A component is a module. Everything in [`DESIGNING_MODULES.md`](DESIGNING_MODULE
 ## Non-negotiables
 
 - External data entering a component (API responses, form values, route/search params, storage) is parsed at the boundary before component logic uses it. Components do not trust `as` on fetched JSON.
-- Derived values are computed, not stored in state and not synchronized by effects.
 - Server state lives in the server-state layer (TanStack Query), not copied into component state.
 - Props are not mutated; a component does not write to objects/arrays it received.
 - Lists rendered from data use stable, identity-based keys — never array index when items reorder, insert, or delete.
-- Components do not embed secrets, tokens, or raw credentials in markup, attributes, or client bundles.
-- Interactive elements use the correct semantic element/role and are keyboard-reachable; non-text content has accessible names.
 
 ## Strong defaults
 
@@ -84,14 +85,6 @@ This is a strong recommendation, not a hard rule — a logical grouping that rea
 - Fetching, caching, and invalidation go through TanStack Query hooks. Components consume `data`/`error`/`status`, they do not orchestrate `fetch` + `useState` + `useEffect` by hand.
 - Mutations go through mutation hooks with explicit invalidation/optimistic update; surface typed errors (matching the repo's error idiom — see [`ERROR_HANDLING.md`](ERROR_HANDLING.md)).
 - Form input is untrusted: parse with Zod on submit (or per-field), and pass the parsed value to the mutation. Validation messages derive from the parse result.
-- Loading and error are first-class render states, not afterthoughts — every data-driven component renders all of `loading`, `error`, `empty`, and `ready` intentionally.
-
-## Accessibility baseline
-
-- Use semantic elements (`button`, `a`, `label`, `nav`, headings) before reaching for `div` + role.
-- Every interactive control is keyboard-operable and focus-visible.
-- Inputs have associated labels; icon-only controls have accessible names.
-- Color is not the sole carrier of meaning; respect reduced-motion preferences for animation.
 
 ## Review checklist
 

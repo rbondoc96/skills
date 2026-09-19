@@ -1,5 +1,7 @@
 # Domain Modeling
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Model domain concepts so illegal states are hard to create and legal operations are easy to call. The goal is not decorative types; it is caller leverage, local invariants, and fewer impossible runtime states.
 
 ## Core vocabulary
@@ -264,7 +266,7 @@ Avoid default branches that silently swallow future variants.
 
 ## Persisted invariants
 
-If the domain forbids `Paid` without `paidAt`, the database should help enforce that. Read-time parsing is still required, but it is not the only protection. Use constraints, unique constraints, and guarded writes where practical.
+Read [Persistence](PERSISTENCE.md) for constraints, retry identity, and guarded writes. Reconstruct TypeScript domain values at the storage boundary as described in [Boundaries and parsing](BOUNDARIES_AND_PARSING.md).
 
 ## Review checklist
 

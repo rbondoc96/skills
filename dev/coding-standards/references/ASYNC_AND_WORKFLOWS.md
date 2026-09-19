@@ -1,5 +1,7 @@
 # Async and Workflows
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Async code needs clear ownership: cancellation lifetime, promise lifetime, concurrency, retries, transactions, and durable progress. Hidden waterfalls and fire-and-forget work are correctness bugs, not style issues.
 
 ## Vocabulary
@@ -25,9 +27,6 @@ Async code needs clear ownership: cancellation lifetime, promise lifetime, concu
 - Detached work identifies owner, lifetime, cancellation behavior, rejection handling, and observability.
 - Independent async work starts concurrently unless ordering/backpressure/rate limit/transaction/workflow/external contract requires serialization.
 - User-sized, database-sized, file-sized, queue-sized, or otherwise unbounded collections use bounded concurrency.
-- Retried mutating commands define how repeated execution avoids duplicate resources, transitions, messages, and external side effects.
-- Retried create operations do not allocate a fresh logical identity.
-- Do not hold database transactions open across network calls or long-running work.
 
 ## Cancellation
 
@@ -140,57 +139,9 @@ await mapConcurrentBounded(users, { concurrency: 10 }, sendEmail);
 
 Sequential execution is not the safety fallback; bounded concurrency is.
 
-## Retry-safe commands
+## Persistence and retries
 
-Treat mutating HTTP commands, especially `POST` creates, as retryable by default. Clients, proxies, Workers, queues, and humans retry after timeouts or lost responses.
-
-A create operation must not allocate a fresh identity on retry and create a duplicate logical resource. Use one of:
-
-- client/request idempotency key;
-- client-provided natural ID plus unique constraint;
-- persisted replay record;
-- deduplication/inbox record;
-- state-machine transition guard;
-- transactional outbox/inbox.
-
-Prefer:
-
-```txt
-receive CreatePayment(idempotencyKey)
-  -> transaction: create/replay payment + outbox record
-  -> deliver outbox after commit
-```
-
-Avoid:
-
-```txt
-insert payment
-call payment provider
-```
-
-A crash between save and external call creates an ambiguous side-effect window unless durable delivery closes it.
-
-## Atomic transition guards
-
-For retry/concurrency-exposed lifecycle transitions, use guarded persistence operations:
-
-```sql
-UPDATE invoices
-SET state = 'paid', paid_at = ?
-WHERE id = ? AND state = 'sent'
-```
-
-Avoid stale read then unconditional write as the only guard:
-
-```txt
-row = SELECT invoice
-if row.state == sent
-  UPDATE invoice SET state = paid
-```
-
-Retries should not overwrite original transition metadata like `completedAt` or `paidAt`.
-
-Deletion semantics should be explicit: if delete is idempotent, name/document that. If the result claims whether this request deleted the entity, derive it from the atomic delete result, not a stale pre-read.
+Read [Persistence](PERSISTENCE.md) for retry-safe commands, transaction boundaries, and atomic transition guards. Apply its retry identity and persisted-state rules when asynchronous work writes data or delivers side effects.
 
 ## Workflow selection
 

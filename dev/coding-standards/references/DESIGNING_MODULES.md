@@ -1,5 +1,7 @@
 # Designing Modules
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Design deep modules: cohesive behavior behind low-burden interfaces at intentional seams. A module earns its keep when deleting it would push meaningful complexity into callers.
 
 ## Vocabulary
@@ -61,7 +63,7 @@ Use the standards terms by responsibility:
 - **Service Module** — owns a cohesive use case, workflow, or service capability. It composes Domain Modules and interfaces implemented by External Adapter Modules through explicit dependencies, sequences effects, owns use-case policy, classifies dependency failures, and returns typed outcomes.
 - **External Adapter Module** — owns framework, protocol, persistence, runtime, SDK, or third-party translation and mechanics. It converts between external shapes and service/domain contracts, including inbound adapters such as HTTP/RPC/queue handlers and outbound adapters such as storage, email, payment, or platform integrations.
 
-A Service Module answers "what should this use case do next?" An External Adapter Module answers "how do we speak HTTP, SQL, Stripe, Cloudflare, a queue, or another boundary?"
+A Service Module answers "what should this use case do next?" An External Adapter Module answers "how do we speak HTTP, SQL, payments, platform bindings, a queue, or another boundary?"
 
 Despite the word "service," pure domain behavior that does not depend on external capabilities or sequence effects remains a Domain Module under these standards. Effect Services/Tags/Layers are dependency-provisioning mechanisms; they can implement Service Modules or External Adapter Modules, but the term **Service Module** names the orchestration responsibility.
 
@@ -228,7 +230,7 @@ Avoid mutable singletons. If a framework requires singleton-like behavior, isola
 Use this as the final scan after applying the rules above; the rule source of truth remains in the relevant sections.
 
 - Adding a new Service Module without checking existing Service Modules and External Adapter Modules.
-- Passing raw framework `Request`, Cloudflare `Env`, database rows, or DTOs into Service Modules.
+- Passing raw framework `Request`, platform environment bindings, database rows, or DTOs into Service Modules.
 - Creating pass-through wrappers that only rename another API.
 - Hiding `Date.now()`, `new Date()`, `crypto.randomUUID()`, or `Math.random()` in service logic.
 - Exporting internal helpers to make tests easier.

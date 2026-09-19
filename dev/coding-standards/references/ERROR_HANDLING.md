@@ -1,5 +1,7 @@
 # Error Handling
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Expected failures are part of the contract. Defects are not. Keep that line sharp so callers can handle normal failures and defects remain loud — regardless of whether the codebase represents failures as values or as thrown exceptions.
 
 ## Core vocabulary

@@ -1,5 +1,7 @@
 # Observability
 
+Scope: TypeScript. Apply this topic only to the TypeScript responsibilities selected by [the skill router](../SKILL.md).
+
 Observability should make failures diagnosable without leaking secrets or coupling domain decisions to logging. The imperative shell observes typed outcomes; the core stays pure.
 
 ## Core vocabulary
@@ -108,7 +110,7 @@ Example fields:
 ```ts
 {
   operation: "sendWelcomeEmail",
-  dependency: "resend",
+  dependency: "email-provider",
   userId,
   attempt,
   errorTag: result.error._tag,
