@@ -1,0 +1,6 @@
+interface:
+  display_name: "HTML communication"
+  short_description: "Publish a document or UI mock variants as one self-contained HTML file"
+  default_prompt: "Use $html-communication to present this as an HTML document and publish it to Postplan."
+policy:
+  allow_implicit_invocation: true

@@ -30,6 +30,7 @@ Agents may load these skills automatically when the request matches their descri
 - `dev/coding-standards/` — TypeScript coding standards and design taste.
 - `dev/file-linear-issue/` — files clear, lean issues in Linear.
 - `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
+- `dev/html-communication/` — publishes a document or a set of UI mock variants as one self-contained HTML file on Postplan.
 - `dev/orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
 
 ### Not user-invocable
