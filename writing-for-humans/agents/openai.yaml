@@ -1,0 +1,6 @@
+interface:
+  display_name: "Writing for humans"
+  short_description: "Clear, natural replies and drafts for human readers"
+  default_prompt: "Use $writing-for-humans to write or revise this text for its intended reader while preserving its meaning."
+policy:
+  allow_implicit_invocation: true

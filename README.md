@@ -32,6 +32,7 @@ Agents may load these skills automatically when the request matches their descri
 - `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
 - `dev/html-communication/` — publishes a document or a set of UI mock variants as one self-contained HTML file on Postplan.
 - `dev/orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
+- `writing-for-humans/` — standalone writing guidance with a shared foundation and selective references for developers, stakeholders, and mixed audiences; covers assistant replies and written deliverables.
 
 ### Not user-invocable
 
