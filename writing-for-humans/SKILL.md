@@ -31,7 +31,7 @@ For mixed audiences, read the mixed-audience reference first. Add a specialist r
 - Lead with the answer, outcome, or request, then explain the context and causal steps needed to understand it. If an explanation failed, restore missing context before simplifying its words.
 - Name who does what and what happens as a result. Prefer active voice when the actor matters, familiar words, and concrete verbs.
 - Keep useful technical terms, briefly explaining unfamiliar ones. Use established terminology consistently. Preserve exact identifiers, commands, and quotations where accuracy depends on them.
-- Preserve facts, numbers, units, conditions, exceptions, uncertainty, and consequences. Keep qualifications beside the claims they limit. Distinguish possibilities, recommendations, commitments, and observed results.
+- Preserve facts, numbers, units, conditions, exceptions, uncertainty, and consequences. Identify what each count measures and the population it covers. Keep qualifications beside the claims they limit. Distinguish possibilities, recommendations, commitments, and observed results.
 - Add specifics only when supported. Do not invent mechanisms, deadlines, measurements, or experiences. Preserve material ambiguity explicitly or ask for clarification.
 - Give each paragraph one main idea. Split sentences that require backtracking. Use examples or analogies when they clarify; explain an analogy's limits when they affect the conclusion.
 
@@ -50,7 +50,7 @@ For before-and-after illustrations of evidence, terminology, and unsupported jud
 
 ## 4. Check and deliver
 
-Verify that the reader can find the point immediately, follow the reasoning, and act without missing a material condition. Check added facts against the source and confirm that the selected audience, terminology, tone, and format fit the request.
+Verify that the reader can find the point immediately, follow the reasoning, and act without missing a material condition. Check added facts against the source, including facts introduced while editing. Confirm that simplified descriptions preserve the operation, timing, and conditions, and that the selected audience, terminology, tone, and format fit the request.
 
 Return requested drafts or rewrites without a preamble or editing report unless requested. Resolve material missing information before presenting a draft as ready to use. In conversation, answer directly with the supporting context needed.
 
