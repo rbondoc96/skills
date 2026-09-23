@@ -5,7 +5,7 @@ description: Create and publish HTML reports, visual explainers, and UI mock var
 
 # HTML communication
 
-Present a plan, spec, write-up, findings, summary, report, comparison, or a set of UI mocks as one readable, self-contained HTML file published to Postplan.
+Present a plan, spec, write-up, findings, summary, report, comparison, or a set of UI mocks as one readable, self-contained HTML file delivered to the selected destination.
 
 Do not use this skill for HTML that ships as part of a product.
 
@@ -29,20 +29,23 @@ For reports and explainers, read [components.md](references/components.md) to ch
 
 Done when the branch, source material, and reader's intended outcome are clear.
 
-## 2. Read a Postplan URL
+## 2. Choose the destination
 
-When the user supplies a `postplan.dev` URL, fetch the uploaded HTML immediately with the shell. Do not use websearch or a browser to retrieve it.
+Honor the requested destination: Postplan, an available artifact host, or a local file. Standing permission covers Postplan uploads of content without confidential or client data; use it as the default for that content. Before an external upload, inspect the content for client information, customer identifiers, internal hostnames, and other sensitive material. Reuse existing authorization that covers the content and destination; otherwise prepare the local file and ask before uploading, naming what would be shared and where.
+
+When using Postplan or reading a supplied `postplan.dev` URL, read [Postplan delivery](references/postplan.md). For another host, verify its current limits and available delivery tools before building. If the destination is unavailable, report the limitation and provide the local file; changing hosts requires authorization.
+
+Done when the destination and its build constraints are known. An unresolved sharing decision blocks upload, not local preparation.
 
 ## 3. Build the file
 
-Create one self-contained HTML file, capped at 512 KB.
+Create one self-contained HTML file within the selected destination's limits.
 
 - Use semantic HTML, inline CSS, inline SVG, and HTTPS or data-URL images.
 - Make it mobile-readable with a responsive viewport and no fixed-width layout.
-- Use an inline classic script only when interactivity materially helps. Keep scripted pages useful without JavaScript; the sandbox blocks storage, fetch, workers, frames, forms, and popups.
-- In script-free files, give external links `target="_blank"` and `rel="noopener noreferrer"`. If any script exists, omit `target="_blank"`.
+- Use scripts only when interactivity materially helps and the destination supports them. Keep pages useful without JavaScript.
 
-Never include external or module scripts, inline event handlers, `javascript:` URLs, forms, frames, embeds, objects, applets, meta refresh, linked stylesheets, secrets, private URLs, or local filesystem paths.
+Keep secrets, private URLs, and local filesystem paths out of the delivered file. Inline styles and local dependencies for portability; apply additional restrictions from the destination's delivery guidance.
 
 Before publishing, check:
 
@@ -54,16 +57,10 @@ Before publishing, check:
 
 Inspect markup and styles by default. If browser verification was requested, inspect wide and narrow layouts in both themes. Report unverified visual behavior rather than claiming a browser check.
 
-## 4. Publish
+## 4. Deliver
 
-You have standing permission to upload every artifact created or updated with this skill. Upload is required, including in Auto mode. Do not ask for separate permission or stop at the local file.
+Write the file locally, then deliver it using the destination and authorization established in step 2.
 
-1. Write the HTML file locally.
-2. Run `npx postplan upload <file path>`
-3. Report the local path and returned Postplan URL.
+For local delivery, report the file path. For hosted delivery, report the local path and the returned public URL only after delivery succeeds. Keep the same file and stable public URL across revisions where the host supports updates. Share section links from that public URL, checking that anchors work on the host.
 
-Re-upload the same absolute path to update the existing URL. Keep one file across every iteration, including after the user picks a variant, so the Postplan URL stays stable and its version history stays comparable. Use `npx postplan upload <file path> --new` only when the user asks for a separate draft.
-
-If validation fails, fix the markup and retry. If a scripted upload needs authentication, ask the user to run `postplan auth login`, then retry without removing the requested interactivity.
-
-Never open a browser or claim the document is hosted before upload succeeds. Do not verify in a browser unless the user asks.
+Done when the requested delivery succeeds, or the local file and a specific authorization or delivery blocker are reported. Open or verify in a browser only when the user asks.

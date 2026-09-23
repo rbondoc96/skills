@@ -29,6 +29,6 @@ Add a short comparison table at the end only when there are three or more varian
 
 ## Stop
 
-Publish, report the URL, and stop. Do not begin implementing, and do not edit real components, until the user picks.
+Deliver through the destination and authorization workflow in `SKILL.md`, report the URL or local path, and stop. Do not begin implementing, and do not edit real components, until the user picks.
 
-After a pick, keep iterating in the same file at the same URL so the Postplan version history stays comparable.
+After a pick, keep iterating in the same file and, where supported, at the same URL so revisions stay comparable.

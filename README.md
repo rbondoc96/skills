@@ -30,7 +30,7 @@ Agents may load these skills automatically when the request matches their descri
 - `dev/coding-standards/` — coding standards routed by language, domain, framework, and tool. Covers TypeScript, PHP/Laravel, and a provisional Python baseline; shared topics cover frontend, backend, persistence, data processing, and AI integrations. Detailed guidance and routing checks live in `references/`.
 - `dev/file-linear-issue/` — files clear, lean issues in Linear.
 - `dev/gh-pr/` — GitHub CLI mechanics for complete PR reads and approved writes.
-- `dev/html-communication/` — publishes reports, visual explainers, and UI mock variants on Postplan. Branch guidance and a Carbon, Tufte CSS, and Red Blob Games inspiration guide live in `references/`; `assets/document.css` and `assets/components.html` provide the approved progression, nearby notes, compact evidence, responsive sidebar/top navigation, and guided section links.
+- `dev/html-communication/` — creates reports, visual explainers, and UI mock variants for a selected host or local delivery, with content-sharing checks before upload. Branch guidance, Postplan delivery constraints, and a Carbon, Tufte CSS, and Red Blob Games inspiration guide live in `references/`; `assets/document.css` and `assets/components.html` provide the approved progression, nearby notes, compact evidence, responsive sidebar/top navigation, and guided section links.
 - `dev/orchestration/` — cross-host delegation, model routing, isolation, and verification policy.
 - `writing-for-humans/` — standalone writing guidance with a shared foundation and selective references for developers, stakeholders, and mixed audiences; covers assistant replies and written deliverables.
 

@@ -1,6 +1,6 @@
 interface:
   display_name: "HTML communication"
   short_description: "Publish reports, visual explainers, and UI mock variants"
-  default_prompt: "Use $html-communication to present this as an HTML document and publish it to Postplan."
+  default_prompt: "Use $html-communication to present this as an HTML document and deliver it to the selected destination."
 policy:
   allow_implicit_invocation: true
