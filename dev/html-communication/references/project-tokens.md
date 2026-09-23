@@ -31,10 +31,10 @@ A defined token is not a used token. Both `theme.extend` and `@theme` describe w
 
 ## 2. Transplant
 
-Emit the tokens you found as a `:root` block at the top of the mock, with a comment naming the file they came from. Build every variant from those variables only.
+Emit the tokens inside a `.mock` wrapper scope, with a comment naming the source. Scope component selectors there too. Build every variant from those tokens; preserve the surrounding artifact's independent styling.
 
 ```css
-:root {
+.mock {
   /* from app/globals.css */
   --background: hsl(0 0% 100%);
   --foreground: hsl(240 10% 3.9%);

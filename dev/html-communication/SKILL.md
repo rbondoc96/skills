@@ -1,6 +1,6 @@
 ---
 name: html-communication
-description: Use when the user asks to communicate through an HTML document, wants UI mocks or design variants to review, or if they mention "HTML" with no additional context.
+description: Create and publish HTML reports, visual explainers, and UI mock variants. Use when the user requests an HTML communication artifact, a visual report or explainer, or interface options to review.
 ---
 
 # HTML communication
@@ -9,14 +9,25 @@ Present a plan, spec, write-up, findings, summary, report, comparison, or a set 
 
 Do not use this skill for HTML that ships as part of a product.
 
-## 1. Pick the mode
+## 1. Choose the reader's task
 
-Two modes share the file format and the publish step, and nothing else.
+Identify the audience, source material, and what the reader should understand or decide. Infer these from the request when clear.
 
-- **Document** — prose, findings, specs, comparisons. Styled to be read. Read [style.md](references/style.md).
-- **Mocks** — UI variants for the user to choose between. Styled to look like the project it was invoked from. Read [style.md](references/style.md), [project-tokens.md](references/project-tokens.md), and [mocks.md](references/mocks.md).
+Read [style.md](references/style.md) for the shared presentation baseline, then select the branch:
 
-A document that merely contains a screenshot or a diagram is still a document. Mock mode starts the moment the user needs to pick between rendered interface options.
+| Reader's task | Read |
+|---|---|
+| Assess findings, evidence, or a proposal | [Reports](references/reports.md) |
+| Understand a mechanism, sequence, or change | [Explainers](references/explainers.md) |
+| Choose between rendered interface options | [Mocks](references/mocks.md) and [project tokens](references/project-tokens.md) |
+
+A report can contain an explainer; load both references when the explanation needs its own progression. A screenshot or diagram alone does not make a document a mock.
+
+This skill owns presentation and information placement. Use `writing-for-humans` for audience, wording, terminology, and voice when available. Apply explicit artifact instructions; do not infer artifact styling rules from preferences about chat replies. Project UI conventions govern the rendered mocks, not the surrounding communication layout.
+
+For reports and explainers, read [components.md](references/components.md) to choose reusable markup from the approved example and stylesheet. These are starting points, not mandatory sections. When changing the visual language or adding patterns, read [inspiration.md](references/inspiration.md) for the design references and how to use them.
+
+Done when the branch, source material, and reader's intended outcome are clear.
 
 ## 2. Read a Postplan URL
 
@@ -33,7 +44,15 @@ Create one self-contained HTML file, capped at 512 KB.
 
 Never include external or module scripts, inline event handlers, `javascript:` URLs, forms, frames, embeds, objects, applets, meta refresh, linked stylesheets, secrets, private URLs, or local filesystem paths.
 
-Done when the file opens standalone, renders in both light and dark, and contains no blocked construct.
+Before publishing, check:
+
+- Every finding, number, status, and qualification agrees with its source. Missing evidence is visible; illustrative data is labeled.
+- Supporting notes sit beside the relevant content on wide screens and immediately after it on narrow screens. Essential warnings remain in the main flow.
+- IDs are unique, anchors and SVG references resolve, and all local markup and CSS dependencies are embedded.
+- The layout supports light and dark themes, narrow screens, keyboard navigation, and readable diagrams without page-wide overflow.
+- The file contains no blocked construct and is within the size limit.
+
+Inspect markup and styles by default. If browser verification was requested, inspect wide and narrow layouts in both themes. Report unverified visual behavior rather than claiming a browser check.
 
 ## 4. Publish
 

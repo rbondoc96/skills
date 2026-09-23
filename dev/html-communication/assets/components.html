@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Communication components: fictional retry readout</title>
+  <!-- Authoring asset: inline document.css before publishing. -->
+  <link rel="stylesheet" href="document.css">
+</head>
+<body>
+<main class="shell with-contents">
+<a class="skip-link" href="#failure">Skip to report content</a>
+<div class="document-layout">
+<nav class="section-nav" aria-label="Report sections">
+<strong>In this report</strong>
+<a href="#failure">01 · The failure</a>
+<a href="#evidence">02 · The evidence</a>
+<a href="#fix">03 · The fix</a>
+<a href="#remaining">04 · What remains</a>
+</nav>
+<article class="document" aria-labelledby="report-title">
+<div class="eyebrow">Engineering readout · Retry behavior</div>
+<h1 class="doc-title" id="report-title">A retry should return the first result.</h1>
+<p>A timeout can hide a successful write. If the retry looks like a new operation, the server may save the same record twice.</p>
+<div class="status-row">
+<span class="status">● Duplicate writes observed</span>
+<span class="status proposed">Proposed fix · Stable request key</span>
+</div>
+<div class="finding">
+<strong>Reuse the request key across attempts.</strong>
+<p>In this fictional controlled test, duplicates fell from 8 in 100 requests to 0 in 100. The p95 latency increased by 15 ms. Concurrent retries and key expiry remain untested.</p>
+</div>
+<div class="reading-row" id="failure" tabindex="-1">
+<div>
+<div class="chapter">
+<span>01</span>
+<h2>Follow the failed response.</h2>
+</div>
+<ol class="step-list">
+<li>
+<span class="step-number">Write</span>
+<b>The record is saved.</b>
+<p>The database commits before the response reaches the client.</p>
+</li>
+<li>
+<span class="step-number">Timeout</span>
+<b>The response is lost.</b>
+<p>The client cannot tell whether the write succeeded.</p>
+</li>
+<li>
+<span class="step-number">Retry</span>
+<b>A second record appears.</b>
+<p>A new request key makes the retry look like a new operation.</p>
+</li>
+</ol>
+<figure>
+<div class="diagram" tabindex="0" role="region" aria-label="Sequence diagram, scroll horizontally on narrow screens">
+<svg viewBox="0 0 760 300" role="img" aria-labelledby="diagram-title-combined">
+<title id="diagram-title-combined">A response is lost after saving. Retrying without a stable key creates a second record.</title>
+<defs>
+<marker id="arrow-combined" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M0 0L10 5L0 10Z" class="arrow-head"/>
+</marker>
+</defs>
+<rect class="lane" x="15" y="8" width="120" height="38" rx="4"/>
+<rect class="lane" x="320" y="8" width="120" height="38" rx="4"/>
+<rect class="lane" x="625" y="8" width="120" height="38" rx="4"/>
+<text x="75" y="33" text-anchor="middle">Client</text>
+<text x="380" y="33" text-anchor="middle">API</text>
+<text x="685" y="33" text-anchor="middle">Database</text>
+<path class="life" d="M75 46V285M380 46V285M685 46V285"/>
+<path class="arrow" d="M75 95H377M380 145H682M75 230H377M380 275H682" marker-end="url(#arrow-combined)"/>
+<text x="210" y="84" text-anchor="middle">1. Send request</text>
+<text x="530" y="134" text-anchor="middle">2. Save record</text>
+<path class="arrow warn-line" d="M380 187H125" stroke-dasharray="5 4"/>
+<text class="warning" x="228" y="177" text-anchor="middle">Response lost ×</text>
+<text x="210" y="220" text-anchor="middle">3. Retry request</text>
+<text class="warning" x="530" y="264" text-anchor="middle">4. Save duplicate</text>
+</svg>
+</div>
+<figcaption>A timeout describes the response. It does not prove the write failed.</figcaption>
+</figure>
+</div>
+<aside class="margin-note" aria-label="Context for the failure sequence">
+<div class="component">Why this matters</div>
+<strong>A timeout is not a rollback.</strong>
+<p>It describes what the client received, not what the database saved.</p>
+<strong>One key, one operation.</strong>
+<p>The request key connects multiple attempts to the same intended write.</p>
+</aside>
+<nav class="step-nav" aria-label="Navigation after the failure">
+<a href="#report-title">← Overview</a>
+<a href="#evidence">The evidence →</a>
+</nav>
+</div>
+<div class="reading-row" id="evidence" tabindex="-1">
+<div>
+<div class="chapter">
+<span>02</span>
+<h2>Compare the observed results.</h2>
+</div>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Retry comparison">
+<table>
+<caption>Controlled retry test · 100 requests per approach</caption>
+<thead>
+<tr>
+<th scope="col">Approach</th>
+<th scope="col" class="num">Duplicates</th>
+<th scope="col" class="num">p95 latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">New key per attempt</th>
+<td class="num">8 / 100</td>
+<td class="num">420 ms</td>
+</tr>
+<tr>
+<th scope="row">Same key on retry</th>
+<td class="num">0 / 100</td>
+<td class="num">435 ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="note">p95: 95% of requests completed within this time. These are fictional demonstration results, not production measurements.</p>
+<details>
+<summary>Inspect the test conditions</summary>
+<p>Fictional fixture: 100 requests per approach, one forced response loss per request, and one retry. In the stable-key approach, the server atomically stores the request key and result.</p>
+</details>
+</div>
+<aside class="margin-note" aria-label="How to interpret the comparison">
+<div class="component">Reading the evidence</div>
+<strong>What p95 means</strong>
+<p>95% of requests completed within the reported time.</p>
+<strong>What zero tells us</strong>
+<p>No duplicates were observed in these 100 requests. That is evidence for these conditions, not a guarantee for every failure case.</p>
+</aside>
+<nav class="step-nav" aria-label="Navigation after the evidence">
+<a href="#failure">← The failure</a>
+<a href="#fix">The fix →</a>
+</nav>
+</div>
+<div class="reading-row" id="fix" tabindex="-1">
+<div>
+<div class="chapter">
+<span>03</span>
+<h2>Keep identity outside the retry.</h2>
+</div>
+<p>Create the key once. Each attempt sends that same key so the server can return the stored result.</p>
+<div class="code-head">
+<span>Retry boundary</span>
+<span>TypeScript</span>
+</div><pre tabindex="0" aria-label="Retry code example"><code><span class="comment">// Keep one key for the whole operation.</span>
+<span class="added">const key = crypto.randomUUID();</span>
+await retry(() =&gt;
+  createRecord({ key, payload })
+);</code></pre><p class="note">The server must atomically associate the key with the saved result. Client code alone does not prevent duplicates.</p>
+<details open>
+<summary>What changes when the same key arrives again?</summary>
+<p>The server looks up the saved result for that operation and returns it instead of writing a second record.</p>
+</details>
+</div>
+<aside class="margin-note" aria-label="Implementation context">
+<div class="component">Implementation note</div>
+<strong>The boundary is the operation.</strong>
+<p>Putting key creation inside the retry callback assigns a new identity to each attempt, defeating duplicate protection.</p>
+</aside>
+<nav class="step-nav" aria-label="Navigation after the fix">
+<a href="#evidence">← The evidence</a>
+<a href="#remaining">What remains →</a>
+</nav>
+</div>
+<div class="reading-row" id="remaining" tabindex="-1">
+<div>
+<div class="chapter">
+<span>04</span>
+<h2>Verify the remaining failure cases.</h2>
+</div>
+<div class="evidence-line">
+<span class="status proposed">Unresolved</span>
+<p>Concurrent retries and key expiry.</p>
+</div>
+<div class="next-step">
+<strong>Next step</strong>
+<p>Test simultaneous attempts with the same key, then test a retry after the key expires. Define the retention period before enabling retries in production.</p>
+</div>
+</div>
+<aside class="margin-note" aria-label="Scope of the recommendation">
+<div class="component">Decision scope</div>
+<strong>Promising within this test.</strong>
+<p>The example supports the proposed approach. It does not establish production readiness.</p>
+</aside>
+<nav class="step-nav" aria-label="Navigation after what remains">
+<a href="#fix">← The fix</a>
+<a href="#report-title">Back to overview ↑</a>
+</nav>
+</div>
+<p class="note source-note">Demonstration content only. All measurements and test outcomes on this page are fictional.</p>
+</article>
+</div>
+</main>
+</body>
+</html>
